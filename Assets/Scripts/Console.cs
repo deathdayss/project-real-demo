@@ -153,7 +153,7 @@ public class Console : MonoBehaviour
             }
         }
     }
-    /*void ModeAtk()
+    void ModeAtk()
     {
         if (Input.GetKeyDown("a") && isOrign && chosen.Count != 0)
         {
@@ -161,24 +161,60 @@ public class Console : MonoBehaviour
             isOrign = false;
         }
     }
-    void ExeModeAtk()
+    public virtual void LClick()
     {
-        if(isModeAtk)
+        if (isModeAtk && Input.GetMouseButtonDown(0) && chosen.Count != 0)
         {
-            if (Input.GetMouseButtonDown(0))
+            isModeAtk = false;
+            isOrign = true;
+            Vector2 tarPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Collider2D[] click = Physics2D.OverlapCircleAll(tarPoint, 0.1f);
+            foreach (GameObject unit in chosen)
             {
-                isModeAtk = false;
-                isOrign = true;
+                unit.GetComponent<BasicUnits>().tarPoint = tarPoint;
+                if (click.Length != 0 && click[0].GetComponent<BasicUnits>() != null)
+                {
+                    if (click[0].gameObject == unit)
+                    {
+                        unit.GetComponent<BasicUnits>().state = 0;
+                    }
+                    else
+                    {
+                        unit.GetComponent<BasicUnits>().tarEnemy = unit.GetComponent<BasicUnits>().ToAttack(click[0].gameObject);
+                    }
+                }
+                else
+                {
+                    unit.GetComponent<BasicUnits>().state = 4; // attack at an point
+                    unit.GetComponent<BasicUnits>().tarEnemy = null;
+                    unit.GetComponent<BasicUnits>().areaEnemy = null;
+                    unit.GetComponent<BasicUnits>().follow = null;
+                    unit.GetComponent<BasicUnits>().isSeeking = false;
+                    unit.GetComponent<BasicUnits>().setPosition = null;
+                }
             }
+            
         }
-    }*/
+    }
+     void ExeModeAtk()
+     {
+         if(isModeAtk)
+         {
+             if (Input.GetMouseButtonDown(1))
+             {
+                 isModeAtk = false;
+                 isOrign = true;
+             }
+         }
+     }
 
 
     // Update is called once per frame
     void Update()
     {
         AdjustCam();
-        /*ModeAtk();*/
+        ModeAtk();
+        LClick();
         Choose();
         /*ExeModeAtk();*/
     }

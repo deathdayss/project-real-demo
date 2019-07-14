@@ -5,14 +5,15 @@ using UnityEditor;
 
 public class BasicUnits : MonoBehaviour
 {
-    public float HP;
-    public float phAtk;
-    public float mgAtk;
+    public int HP;
+    public int phAtk;
+    public int mgAtk;
     public float phDef;
     public float mgDef;
     public float movSpd;
-    public float atkSpd;
+    public int atkSpd;
     public float atkDis = 0;
+    public float thrSpd;
     public float radius;
     public float Exp;
     public float pExp;
@@ -20,26 +21,28 @@ public class BasicUnits : MonoBehaviour
     public float sight = 7;
     public float seek;
     public int team = 1;
+    public int state = 0; // initial state is stop
     public bool atkMode = true;
     public bool isChosen = false;
     public bool isSeen = true;
     public Console player;
     public Rigidbody2D myBody;
-    bool isSeeking = false;
-    bool isAttakcing = false;
-    float atk;
-    int state = 0; // initial state is stop
     public GameObject circle;
-    GameObject follow;
-    GameObject tarEnemy = null;
+    public GameObject tarEnemy = null;
+    float time = 0;
+    float timeHelper = 0;
+    public bool isSeeking = false;
+    bool isClosed = false;
+    int atk;
+    public GameObject follow;
     GameObject tarEnemyHelper = null;
-    GameObject areaEnemy = null;
+    public GameObject areaEnemy = null;
     GameObject atkMe;
-    Vector2 tarPoint;
-    Vector2? setPosition = null;
+    public Vector2 tarPoint;
+    public Vector2? setPosition = null;
     Vector2 tarEnemyPos;
     Collider2D[] click;
-    List<GameObject> seenThings = new List<GameObject>();
+    public List<GameObject> seenThings = new List<GameObject>();
 
 
     void Start()
@@ -57,9 +60,10 @@ public class BasicUnits : MonoBehaviour
         {
             atk = mgAtk;
         }
+        myBody.isKinematic = false;
     }
 
-    GameObject ToAttack(GameObject tar)
+    public GameObject ToAttack(GameObject tar)
     {
         state = 2; // attack tarEnemy
         areaEnemy = null;
@@ -151,7 +155,10 @@ public class BasicUnits : MonoBehaviour
                     {
                         if (sth.GetComponent<BasicUnits>().team != 1 && !seenThings.Contains(sth.gameObject))
                         {
-                            sth.GetComponent<BasicUnits>().isSeen = true;
+                            if (!sth.GetComponent<BasicUnits>().isSeen)
+                            {
+                                sth.GetComponent<BasicUnits>().isSeen = true;
+                            }
                             seenThings.Add(sth.gameObject);
                         }
                     }
@@ -173,9 +180,22 @@ public class BasicUnits : MonoBehaviour
                 }
                 if (Vector3.Distance(transform.position, seenThings[i].transform.position) > sight)
                 {
-                    seenThings[i].GetComponent<BasicUnits>().isSeen = false;
+                    GameObject h = seenThings[i];
                     seenThings.RemoveAt(i);
                     i--;
+                    bool k = false;
+                    foreach (GameObject unit in player.myUnits)
+                    {
+                        if (unit.GetComponent<BasicUnits>().seenThings.Contains(h))
+                        {
+                            k = true;
+                            break;
+                        }
+                    }
+                    if (!k)
+                    {
+                        h.GetComponent<BasicUnits>().isSeen = false;
+                    }
                 }
             }
         }
@@ -192,9 +212,10 @@ public class BasicUnits : MonoBehaviour
     {
         if (state == 0 && setPosition != null && !isSeeking) // stop
         {
-            if (transform.position != (Vector3)setPosition)
+            if ((Vector2)transform.position != (Vector2)setPosition)
             {
-                Moveing((Vector2)setPosition);
+                
+                transform.position = Moveing((Vector2)setPosition);
             }
             else
             {
@@ -212,7 +233,7 @@ public class BasicUnits : MonoBehaviour
                 transform.position = Moveing(tarPoint);
             }
         }
-        else if (state == 2 && !isAttakcing) // attack tarenemy
+        else if (state == 2 && !isClosed) // attack tarenemy
         {
             if (tarEnemy == null)
             {
@@ -242,7 +263,7 @@ public class BasicUnits : MonoBehaviour
             }
         }
         
-        if (isSeeking && !isAttakcing) // seek to the areaEnemy
+        if (isSeeking && !isClosed) // seek to the areaEnemy
         {
             transform.position = Moveing(areaEnemy.transform.position);
         }
@@ -256,36 +277,52 @@ public class BasicUnits : MonoBehaviour
     }
     void Attacking()
     {
+        if(isClosed)
+        {
+            time += Time.deltaTime;
+            if (isSeeking && areaEnemy != null && time - timeHelper >= 1)
+            {
+                areaEnemy.GetComponent<BasicUnits>().HP -= atk;
+                time = timeHelper;
+            }
+            if (state == 2 && tarEnemy != null && time - timeHelper >= 1)
+            {
+                tarEnemy.GetComponent<BasicUnits>().HP -= atk;
+                time = timeHelper;
+            }
+        }
+    }
+    void CanAttack()
+    {
         if (isSeeking && areaEnemy != null)
         {
             if (Vector2.Distance(transform.position, areaEnemy.transform.position) < radius + areaEnemy.GetComponent<BasicUnits>().radius + atkDis)
             {
-                isAttakcing = true;
-                areaEnemy.GetComponent<BasicUnits>().HP -= atk * Time.deltaTime;
+                isClosed = true;
             }
             else
             {
-                isAttakcing = false;
+                isClosed = false;
             }
         }
         if (state == 2)
         {
             if (tarEnemy != null && Vector2.Distance(transform.position, tarEnemy.transform.position) < radius + tarEnemy.GetComponent<BasicUnits>().radius + atkDis)
             {
-                isAttakcing = true;
-                tarEnemy.GetComponent<BasicUnits>().HP -= atk * Time.deltaTime;
+                isClosed = true;
             }
             else
             {
-                isAttakcing = false;
+                isClosed = false;
             }
         }
     }
 
     void checkenemies()
     {
-        if (state != 1 && state != 2 && !isSeeking)
+        if (state != 1 && state != 2 && !isSeeking && !(state == 0 && setPosition != null))
         {
+            
             ArrayList enemieslist = new ArrayList();
             ArrayList dis = new ArrayList();
             Collider2D[] enemies = Physics2D.OverlapCircleAll(transform.position, 4f);
@@ -329,7 +366,7 @@ public class BasicUnits : MonoBehaviour
     {
         if(isSeeking)
         {
-            if (areaEnemy == null || Vector2.Distance((Vector2)setPosition, areaEnemy.transform.position) > seek || !areaEnemy.GetComponent<BasicUnits>().isSeen)
+            if (areaEnemy == null || Vector2.Distance((Vector2)setPosition, transform.position) > seek || !areaEnemy.GetComponent<BasicUnits>().isSeen)
             {
                 isSeeking = false;
                 areaEnemy = null;
@@ -353,14 +390,14 @@ public class BasicUnits : MonoBehaviour
             setPosition = null;
         }
     }
-    void ModeAtk()
+    /*void ModeAtk()
     {
         if (Input.GetKeyDown("a") && player.isOrign && player.chosen.Count != 0)
         {
             player.isModeAtk = true;
             player.isOrign = false;
         }
-    }
+    }*/
     /*void ExeModeAtk()
     {
         if (player.isModeAtk)
@@ -373,7 +410,7 @@ public class BasicUnits : MonoBehaviour
         }
     } */
 
-    public virtual void LClick()
+    /*public virtual void LClick()
     {
         if (player.isModeAtk && Input.GetMouseButtonDown(0))
         {
@@ -402,7 +439,7 @@ public class BasicUnits : MonoBehaviour
                 setPosition = null;
             }
         }
-    }
+    }*/
 
     void RClick()
     {
@@ -446,6 +483,11 @@ public class BasicUnits : MonoBehaviour
                 }
             }
         }
+        if (Input.GetMouseButtonDown(1) && player.isModeAtk)
+        {
+            player.isModeAtk = false;
+            player.isOrign = true;
+        }
     }
 
     void Update()
@@ -457,15 +499,16 @@ public class BasicUnits : MonoBehaviour
         DeleteSeen();
         if (isChosen)
         {
-            LClick();
+            /*LClick();*/
             RClick();
             PresS();
         }
-        ModeAtk();
+        /*ModeAtk();*/
         tarPosition();
         checkenemies();
         SeekEnemy();
         State();
+        CanAttack();
         Attacking();
     }
 }
