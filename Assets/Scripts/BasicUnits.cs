@@ -11,7 +11,7 @@ public class BasicUnits : MonoBehaviour
     public float phDef;
     public float mgDef;
     public float movSpd;
-    public int atkSpd;
+    public float atkSpd = 1;
     public float atkDis = 0;
     public float thrSpd;
     public float radius;
@@ -49,7 +49,11 @@ public class BasicUnits : MonoBehaviour
     {
         if (team != 1)
         {
-            isSeen = false;
+            gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        }
+        else
+        {
+            player.myUnits.Add(gameObject);
         }
         myBody.freezeRotation = true;
         if (atkMode)
@@ -90,7 +94,38 @@ public class BasicUnits : MonoBehaviour
         {
             state = 0;
         }
+        /*if (collision.gameObject.GetComponent<BasicUnits>() != null)
+        {
+            if (((state == 1 && collision.gameObject.GetComponent<BasicUnits>().state == 1) || (state == 2 && collision.gameObject.GetComponent<BasicUnits>().state == 2)) && tarPoint == collision.gameObject.GetComponent<BasicUnits>().tarPoint)
+            {
+                if (Vector2.Distance(transform.position, tarPoint) < 0.5)
+                {
+                    state = 0;
+                    collision.gameObject.GetComponent<BasicUnits>().state = 0;
+                }
+            }
+            else*/
+         
+        if ((state == 1 || state == 4) && collision.collider.bounds.Contains(tarPoint))
+        {
+            Debug.Log(collision.collider.bounds);
+            state = 0;
+            gameObject.GetComponent<Collider2D>().bounds.Encapsulate(tarPoint);
+        }
     }
+      
+    void Circle()
+    {
+        if (isChosen)
+        {
+            circle.GetComponent<SpriteRenderer>().enabled = true;
+        }
+        else
+        {
+            circle.GetComponent<SpriteRenderer>().enabled = false;
+        }
+    }
+    
     void Layer()
     {
         if (team != 1)
@@ -118,7 +153,7 @@ public class BasicUnits : MonoBehaviour
         }
     }
 
-    void IsSeen()
+    /*void IsSeen()
     {
         if (isSeen)
         {
@@ -128,7 +163,7 @@ public class BasicUnits : MonoBehaviour
         {
             gameObject.GetComponent<SpriteRenderer>().enabled = false;
         }
-    }
+    }*/
 
     void See()
     {
@@ -155,9 +190,9 @@ public class BasicUnits : MonoBehaviour
                     {
                         if (sth.GetComponent<BasicUnits>().team != 1 && !seenThings.Contains(sth.gameObject))
                         {
-                            if (!sth.GetComponent<BasicUnits>().isSeen)
+                            if (!sth.GetComponent<SpriteRenderer>().enabled)
                             {
-                                sth.GetComponent<BasicUnits>().isSeen = true;
+                                sth.GetComponent<SpriteRenderer>().enabled = true;
                             }
                             seenThings.Add(sth.gameObject);
                         }
@@ -194,7 +229,7 @@ public class BasicUnits : MonoBehaviour
                     }
                     if (!k)
                     {
-                        h.GetComponent<BasicUnits>().isSeen = false;
+                        h.GetComponent<SpriteRenderer>().enabled = false;
                     }
                 }
             }
@@ -240,7 +275,7 @@ public class BasicUnits : MonoBehaviour
                 state = 4;
                 tarPoint = tarEnemyPos;
             }
-            else if (tarEnemy.GetComponent<BasicUnits>().isSeen)
+            else if (tarEnemy.GetComponent<SpriteRenderer>().enabled)
             {
                 transform.position = Moveing(tarEnemy.transform.position);
             }
@@ -280,12 +315,12 @@ public class BasicUnits : MonoBehaviour
         if(isClosed)
         {
             time += Time.deltaTime;
-            if (isSeeking && areaEnemy != null && time - timeHelper >= 1)
+            if (isSeeking && areaEnemy != null && time - timeHelper >= atkSpd)
             {
                 areaEnemy.GetComponent<BasicUnits>().HP -= atk;
                 time = timeHelper;
             }
-            if (state == 2 && tarEnemy != null && time - timeHelper >= 1)
+            if (state == 2 && tarEnemy != null && time - timeHelper >= atkSpd)
             {
                 tarEnemy.GetComponent<BasicUnits>().HP -= atk;
                 time = timeHelper;
@@ -366,7 +401,7 @@ public class BasicUnits : MonoBehaviour
     {
         if(isSeeking)
         {
-            if (areaEnemy == null || Vector2.Distance((Vector2)setPosition, transform.position) > seek || !areaEnemy.GetComponent<BasicUnits>().isSeen)
+            if (areaEnemy == null || Vector2.Distance((Vector2)setPosition, transform.position) > seek || !areaEnemy.GetComponent<SpriteRenderer>().enabled)
             {
                 isSeeking = false;
                 areaEnemy = null;
@@ -492,8 +527,9 @@ public class BasicUnits : MonoBehaviour
 
     void Update()
     {
+        Circle();
         killed();
-        IsSeen();
+        /*IsSeen();*/
         Layer();
         See();
         DeleteSeen();
