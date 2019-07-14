@@ -11,24 +11,33 @@ public class BasicUnits : MonoBehaviour
     public float phDef;
     public float mgDef;
     public float movSpd;
-    public float atSpd;
-    public float atDIs;
+    public float atkSpd;
+    public float atkDis = 0;
+    public float radius;
     public float Exp;
     public float pExp;
     public float arExp;
-    public float sight = 8;
+    public float sight = 7;
+    public float seek;
     public int team = 1;
-    public bool atkMode;
-    public bool isChosen;
+    public bool atkMode = true;
+    public bool isChosen = false;
     public bool isSeen = true;
     public Console player;
     public Rigidbody2D myBody;
+    bool isSeeking = false;
+    bool isAttakcing = false;
+    float atk;
+    int state = 0; // initial state is stop
+    public GameObject circle;
     GameObject follow;
-    GameObject tarEnemy;
-    GameObject areaEnemy;
+    GameObject tarEnemy = null;
+    GameObject tarEnemyHelper = null;
+    GameObject areaEnemy = null;
     GameObject atkMe;
     Vector2 tarPoint;
-    int state = 0; // initial state is stop
+    Vector2? setPosition = null;
+    Vector2 tarEnemyPos;
     Collider2D[] click;
     List<GameObject> seenThings = new List<GameObject>();
 
@@ -39,7 +48,15 @@ public class BasicUnits : MonoBehaviour
         {
             isSeen = false;
         }
-        myBody.isKinematic = true;
+        myBody.freezeRotation = true;
+        if (atkMode)
+        {
+            atk = phAtk;
+        }
+        else
+        {
+            atk = mgAtk;
+        }
     }
 
     GameObject ToAttack(GameObject tar)
@@ -47,7 +64,28 @@ public class BasicUnits : MonoBehaviour
         state = 2; // attack tarEnemy
         areaEnemy = null;
         follow = null;
+        isSeeking = false;
+        setPosition = null;
         return tar.gameObject;
+    }
+
+    Vector2 Moveing(Vector2 place)
+    {
+        return Vector2.MoveTowards(transform.position, place, movSpd * Time.deltaTime);
+    }
+    /*void Circle()
+    {
+        if (isChosen)
+        {
+            circle.GetComponent<sprite>
+        }
+    }*/
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (state == 3 && collision.gameObject == follow)
+        {
+            state = 0;
+        }
     }
     void Layer()
     {
@@ -78,9 +116,9 @@ public class BasicUnits : MonoBehaviour
 
     void IsSeen()
     {
-        if(isSeen)
+        if (isSeen)
         {
-            gameObject.GetComponent <SpriteRenderer>().enabled = true;
+            gameObject.GetComponent<SpriteRenderer>().enabled = true;
         }
         else
         {
@@ -92,7 +130,7 @@ public class BasicUnits : MonoBehaviour
     {
         if (team == 1)
         {
-            Collider2D[] round = Physics2D.OverlapCircleAll(transform.position, sight); 
+            Collider2D[] round = Physics2D.OverlapCircleAll(transform.position, sight);
             if (round.Length != 0)
             {
                 foreach (Collider2D sth in round)
@@ -121,12 +159,18 @@ public class BasicUnits : MonoBehaviour
             }
         }
     }
+
     void DeleteSeen()
     {
         if (seenThings.Count != 0)
         {
             for (int i = 0; i < seenThings.Count; i++)
             {
+                if (seenThings[i] == null)
+                {
+                    seenThings.RemoveAt(i);
+                    i--;
+                }
                 if (Vector3.Distance(transform.position, seenThings[i].transform.position) > sight)
                 {
                     seenThings[i].GetComponent<BasicUnits>().isSeen = false;
@@ -136,50 +180,244 @@ public class BasicUnits : MonoBehaviour
             }
         }
     }
+    void killed()
+    {
+        if (HP <= 0)
+        {
+            Destroy(gameObject);
+        }
+    }
 
     void State()
     {
-        if(state == 1) 
+        if (state == 0 && setPosition != null && !isSeeking) // stop
         {
-            transform.position = Vector2.MoveTowards(transform.position, tarPoint, movSpd * Time.deltaTime);
+            if (transform.position != (Vector3)setPosition)
+            {
+                Moveing((Vector2)setPosition);
+            }
+            else
+            {
+                setPosition = null;
+            }
         }
-        else if (state == 2)
+        if (state == 1 || (state == 4 && !isSeeking)) // move/attack to the place
         {
-           /* if ()*/
+            if ((Vector2)transform.position == tarPoint)
+            {
+                state = 0;
+            }
+            else
+            {
+                transform.position = Moveing(tarPoint);
+            }
+        }
+        else if (state == 2 && !isAttakcing) // attack tarenemy
+        {
+            if (tarEnemy == null)
+            {
+                state = 4;
+                tarPoint = tarEnemyPos;
+            }
+            else if (tarEnemy.GetComponent<BasicUnits>().isSeen)
+            {
+                transform.position = Moveing(tarEnemy.transform.position);
+            }
+            else
+            {
+                state = 4;
+                tarPoint = tarEnemy.transform.position;
+                tarEnemy = null;
+            }
+        }
+        else if (state == 3 && !isSeeking) // follow my unit
+        {
+            if (follow == null)
+            {
+                state = 0;
+            }
+            else
+            {
+                transform.position = Moveing(follow.transform.position);
+            }
+        }
+        
+        if (isSeeking && !isAttakcing) // seek to the areaEnemy
+        {
+            transform.position = Moveing(areaEnemy.transform.position);
         }
     }
-    
-    void LClick()
+    void tarPosition()
     {
-        if(player.isModeAtk && Input.GetMouseButtonDown(0))
+        if (state == 2 && tarEnemy != null)
+        {
+            tarEnemyPos = tarEnemy.transform.position;
+        }
+    }
+    void Attacking()
+    {
+        if (isSeeking && areaEnemy != null)
+        {
+            if (Vector2.Distance(transform.position, areaEnemy.transform.position) < radius + areaEnemy.GetComponent<BasicUnits>().radius + atkDis)
+            {
+                isAttakcing = true;
+                areaEnemy.GetComponent<BasicUnits>().HP -= atk * Time.deltaTime;
+            }
+            else
+            {
+                isAttakcing = false;
+            }
+        }
+        if (state == 2)
+        {
+            if (tarEnemy != null && Vector2.Distance(transform.position, tarEnemy.transform.position) < radius + tarEnemy.GetComponent<BasicUnits>().radius + atkDis)
+            {
+                isAttakcing = true;
+                tarEnemy.GetComponent<BasicUnits>().HP -= atk * Time.deltaTime;
+            }
+            else
+            {
+                isAttakcing = false;
+            }
+        }
+    }
+
+    void checkenemies()
+    {
+        if (state != 1 && state != 2 && !isSeeking)
+        {
+            ArrayList enemieslist = new ArrayList();
+            ArrayList dis = new ArrayList();
+            Collider2D[] enemies = Physics2D.OverlapCircleAll(transform.position, 4f);
+            if (enemies.Length > 0)
+            {
+                foreach (Collider2D unit in enemies)
+                {
+                    GameObject enemys = unit.gameObject;
+                    if (enemys.GetComponent<BasicUnits>() != null)
+                    {
+                        if (enemys.GetComponent<BasicUnits>().team != team)
+                        {
+                            enemieslist.Add(enemys);
+                            dis.Add(Vector2.Distance(enemys.transform.position, transform.position));
+                        }
+                    }
+                }
+            }
+            if (dis.Count > 0)
+            {
+                float min = (float)dis[0];
+                int index = 0;
+                int indexc = 0;
+                foreach (float i in dis)
+                {
+                    if (i < min)
+                    {
+                        min = i;
+                        index = indexc;
+                    }
+                    indexc++;
+                }
+                areaEnemy = (GameObject)enemieslist[index];
+                setPosition = transform.position;
+                isSeeking = true;
+            }
+        }
+    }
+     
+    void SeekEnemy()
+    {
+        if(isSeeking)
+        {
+            if (areaEnemy == null || Vector2.Distance((Vector2)setPosition, areaEnemy.transform.position) > seek || !areaEnemy.GetComponent<BasicUnits>().isSeen)
+            {
+                isSeeking = false;
+                areaEnemy = null;
+                if (state != 0)
+                {
+                    setPosition = null;
+                }
+            }
+        }
+    }
+
+    void PresS()
+    {
+        if (Input.GetKeyDown("s"))
+        {
+            state = 0;
+            isSeeking = false;
+            follow = null;
+            tarEnemy = null;
+            areaEnemy = null;
+            setPosition = null;
+        }
+    }
+    void ModeAtk()
+    {
+        if (Input.GetKeyDown("a") && player.isOrign && player.chosen.Count != 0)
+        {
+            player.isModeAtk = true;
+            player.isOrign = false;
+        }
+    }
+    /*void ExeModeAtk()
+    {
+        if (player.isModeAtk)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                player.isModeAtk = false;
+                player.isOrign = true;
+            }
+        }
+    } */
+
+    public virtual void LClick()
+    {
+        if (player.isModeAtk && Input.GetMouseButtonDown(0))
         {
             player.isModeAtk = false;
+            player.isOrign = true; 
             tarPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            click = Physics2D.OverlapCircleAll(tarPoint, 1);
+            click = Physics2D.OverlapCircleAll(tarPoint, 0.1f);
             if (click.Length != 0 && click[0].GetComponent<BasicUnits>() != null)
             {
-
-                tarEnemy = ToAttack(click[0].gameObject);
+                if (click[0] == gameObject)
+                {
+                    state = 0;
+                }
+                else
+                {
+                    tarEnemy = ToAttack(click[0].gameObject);
+                }
             }
             else
             {
                 state = 4; // attack at an point
+                tarEnemy = null;
+                areaEnemy = null;
+                follow = null;
+                isSeeking = false;
+                setPosition = null;
             }
         }
     }
 
     void RClick()
     {
-        if (Input.GetMouseButtonDown(1) && !player.isModeAtk)
+        if (Input.GetMouseButtonDown(1) && player.isOrign)
         {
             tarPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            click = Physics2D.OverlapCircleAll(tarPoint, 1);
+            click = Physics2D.OverlapCircleAll(tarPoint, 0.1f);
             if (click.Length == 0 || click[0].GetComponent<BasicUnits>() == null)
             {
                 state = 1; // receive ToMove order;
                 tarEnemy = null;
                 areaEnemy = null;
                 follow = null;
+                isSeeking = false;
+                setPosition = null;
             }
             else
             {
@@ -187,6 +425,11 @@ public class BasicUnits : MonoBehaviour
                 if (tar.gameObject == gameObject)
                 {
                     state = 0; // stop
+                    isSeeking = false;
+                    follow = null;
+                    tarEnemy = null;
+                    areaEnemy = null;
+                    setPosition = null;
                 }
                 else if (tar.GetComponent<BasicUnits>().team != team)
                 {
@@ -198,6 +441,8 @@ public class BasicUnits : MonoBehaviour
                     follow = tar.gameObject;
                     tarEnemy = null;
                     areaEnemy = null;
+                    isSeeking = false;
+                    setPosition = null;
                 }
             }
         }
@@ -205,9 +450,22 @@ public class BasicUnits : MonoBehaviour
 
     void Update()
     {
-        Layer();
+        killed();
         IsSeen();
+        Layer();
         See();
         DeleteSeen();
+        if (isChosen)
+        {
+            LClick();
+            RClick();
+            PresS();
+        }
+        ModeAtk();
+        tarPosition();
+        checkenemies();
+        SeekEnemy();
+        State();
+        Attacking();
     }
 }

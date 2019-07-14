@@ -6,12 +6,15 @@ public class Console : MonoBehaviour
 {
     public int gold;
     public int source;
+    public bool isModeAtk = false;
+    public bool isOrign = true;
+    public Transform cam;
     public GameObject lineLeft;
     public GameObject lineRight;
     public GameObject lineDown;
     public GameObject lineUp;
-    public List<GameObject> myUnits;
-    List<GameObject> chosen = new List<GameObject>();
+    public List<GameObject> myUnits = new List<GameObject>();
+    public List<GameObject> chosen = new List<GameObject>();
     List<GameObject> team1 = new List<GameObject>();
     List<GameObject> team2 = new List<GameObject>();
     List<GameObject> team3 = new List<GameObject>();
@@ -20,9 +23,9 @@ public class Console : MonoBehaviour
     BasicUnits enemyChoice;
     Vector2 box1;
     Vector2 box1S;
-    public bool isModeAtk = false;
+    bool camMove = false;
     bool ishold;
-    bool isOrign = true;
+    
 
     private void Start()
     {
@@ -30,6 +33,30 @@ public class Console : MonoBehaviour
         lineRight.GetComponent<SpriteRenderer>().enabled = false;
         lineDown.GetComponent<SpriteRenderer>().enabled = false;
         lineUp.GetComponent<SpriteRenderer>().enabled = false;
+    }
+    void AdjustCam()
+    {
+        if (Input.GetKeyDown("c"))
+            camMove = !camMove;
+        if (camMove)
+        {
+            if (Input.mousePosition.x >= 1919)
+            {
+                cam.position += new Vector3(18 * Time.deltaTime, 0, 0);
+            }
+            if (Input.mousePosition.x <= 0)
+            {
+                cam.position -= new Vector3(18 * Time.deltaTime, 0, 0);
+            }
+            if (Input.mousePosition.y >= 1079)
+            {
+                cam.position += new Vector3(0, 18 * Time.deltaTime, 0);
+            }
+            if (Input.mousePosition.y <= 0)
+            {
+                cam.position -= new Vector3(0, 18 * Time.deltaTime, 0);
+            }
+        }
     }
 
     void Choose()
@@ -70,7 +97,7 @@ public class Console : MonoBehaviour
                 lineUp.transform.localScale = new Vector2(scaleH, 1);
                 lineDown.transform.localScale = new Vector2(scaleH, 1);
             }
-            if (Input.GetMouseButtonUp(0))
+            if (Input.GetMouseButtonUp(0) && ishold)
             {
                 lineLeft.GetComponent<SpriteRenderer>().enabled = false;
                 lineRight.GetComponent<SpriteRenderer>().enabled = false;
@@ -105,16 +132,13 @@ public class Console : MonoBehaviour
                             {
                                 foreach (GameObject a in chosen)
                                 {
-                                    if (!boxChoice.Contains(a))
+                                    if (!boxChoice.Contains(a) && a != null)
                                     {
                                         a.GetComponent<BasicUnits>().isChosen = false;
                                     }
                                 }
                             }
-                            else
-                            {
-                                chosen = boxChoice;
-                            }
+                            chosen = boxChoice;
                         }
                         else if (enemyChoice != null)
                         {
@@ -126,11 +150,10 @@ public class Console : MonoBehaviour
                         }
                     }
                 }
-
             }
         }
     }
-    void ModeAtk()
+    /*void ModeAtk()
     {
         if (Input.GetKeyDown("a") && isOrign && chosen.Count != 0)
         {
@@ -142,17 +165,21 @@ public class Console : MonoBehaviour
     {
         if(isModeAtk)
         {
-            if (Input.GetMouseButtonDown(1))
+            if (Input.GetMouseButtonDown(0))
             {
                 isModeAtk = false;
                 isOrign = true;
             }
         }
-    }
+    }*/
 
 
     // Update is called once per frame
     void Update()
     {
+        AdjustCam();
+        /*ModeAtk();*/
+        Choose();
+        /*ExeModeAtk();*/
     }
 }
