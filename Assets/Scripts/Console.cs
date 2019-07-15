@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Console : MonoBehaviour
 {
@@ -171,6 +173,7 @@ public class Console : MonoBehaviour
             Collider2D[] click = Physics2D.OverlapCircleAll(tarPoint, 0.1f);
             foreach (GameObject unit in chosen)
             {
+                unit.GetComponent<BasicUnits>().setPosition = null;
                 unit.GetComponent<BasicUnits>().tarPoint = tarPoint;
                 if (click.Length != 0 && click[0].GetComponent<BasicUnits>() != null)
                 {
@@ -180,17 +183,16 @@ public class Console : MonoBehaviour
                     }
                     else
                     {
-                        unit.GetComponent<BasicUnits>().tarEnemy = unit.GetComponent<BasicUnits>().ToAttack(click[0].gameObject);
+                        unit.GetComponent<BasicUnits>().AddTar(click[0].gameObject);
                     }
                 }
                 else
                 {
                     unit.GetComponent<BasicUnits>().state = 4; // attack at an point
-                    unit.GetComponent<BasicUnits>().tarEnemy = null;
-                    unit.GetComponent<BasicUnits>().areaEnemy = null;
+                    unit.GetComponent<BasicUnits>().CancelTar();
+                    unit.GetComponent<BasicUnits>().CancelArea();
                     unit.GetComponent<BasicUnits>().follow = null;
                     unit.GetComponent<BasicUnits>().isSeeking = false;
-                    unit.GetComponent<BasicUnits>().setPosition = null;
                 }
             }
             
@@ -207,15 +209,23 @@ public class Console : MonoBehaviour
              }
          }
      }
-
+    void UIgame()
+    {
+        if (Input.GetKey("r"))
+            SceneManager.LoadScene(0);
+        if (Input.GetKey("q"))
+            Application.Quit();
+    }
 
     // Update is called once per frame
     void Update()
     {
         AdjustCam();
         ModeAtk();
-        LClick();
+        
         Choose();
+        LClick();
         /*ExeModeAtk();*/
+        UIgame();
     }
 }

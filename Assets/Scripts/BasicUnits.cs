@@ -24,7 +24,6 @@ public class BasicUnits : MonoBehaviour
     public int state = 0; // initial state is stop
     public bool atkMode = true;
     public bool isChosen = false;
-    public bool isSeen = true;
     public Console player;
     public Rigidbody2D myBody;
     public GameObject circle;
@@ -37,12 +36,15 @@ public class BasicUnits : MonoBehaviour
     public GameObject follow;
     GameObject tarEnemyHelper = null;
     public GameObject areaEnemy = null;
-    GameObject atkMe;
     public Vector2 tarPoint;
+    public Vector2 atkPoint;
     public Vector2? setPosition = null;
     Vector2 tarEnemyPos;
     Collider2D[] click;
+    public List<GameObject> attacker = new List<GameObject>();
     public List<GameObject> seenThings = new List<GameObject>();
+    public List<GameObject> dirctRes = new List<GameObject>();
+    public List<Vector2> dirct = new List<Vector2>();
 
 
     void Start()
@@ -65,9 +67,14 @@ public class BasicUnits : MonoBehaviour
             atk = mgAtk;
         }
         myBody.isKinematic = false;
+        for (int i = 0; i < 8; i++)
+        {
+            dirctRes.Add(null);
+        }
     }
+    
 
-    public GameObject ToAttack(GameObject tar)
+    /*public GameObject ToAttack(GameObject tar)
     {
         state = 2; // attack tarEnemy
         areaEnemy = null;
@@ -75,19 +82,13 @@ public class BasicUnits : MonoBehaviour
         isSeeking = false;
         setPosition = null;
         return tar.gameObject;
-    }
+    }*/
 
     Vector2 Moveing(Vector2 place)
     {
         return Vector2.MoveTowards(transform.position, place, movSpd * Time.deltaTime);
     }
-    /*void Circle()
-    {
-        if (isChosen)
-        {
-            circle.GetComponent<sprite>
-        }
-    }*/
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (state == 3 && collision.gameObject == follow)
@@ -106,12 +107,12 @@ public class BasicUnits : MonoBehaviour
             }
             else*/
          
-        if ((state == 1 || state == 4) && collision.collider.bounds.Contains(tarPoint))
+        /*if ((state == 1 || state == 4) && collision.collider.bounds.Contains(tarPoint))
         {
             Debug.Log(collision.collider.bounds);
             state = 0;
             gameObject.GetComponent<Collider2D>().bounds.Encapsulate(tarPoint);
-        }
+        }*/
     }
       
     void Circle()
@@ -235,11 +236,244 @@ public class BasicUnits : MonoBehaviour
             }
         }
     }
+    private static int CompareDis(GameObject a, GameObject b)
+    {
+        float disA = 0;
+        float disB = 0;
+        if (a.GetComponent<BasicUnits>().tarEnemy != null)
+        {
+            disA = Vector2.Distance(a.transform.position, a.GetComponent<BasicUnits>().tarEnemy.transform.position);
+        }
+        else
+        {
+            disA = Vector2.Distance(a.transform.position, a.GetComponent<BasicUnits>().areaEnemy.transform.position);
+        }
+        if (b.GetComponent<BasicUnits>().tarEnemy != null)
+        {
+            disB = Vector2.Distance(b.transform.position, b.GetComponent<BasicUnits>().tarEnemy.transform.position);
+        }
+        else
+        {
+            disB = Vector2.Distance(b.transform.position, b.GetComponent<BasicUnits>().areaEnemy.transform.position);
+        }
+        if (disA > disB)
+        {
+            return 1;
+        }
+        if (disA < disB)
+        {
+            return -1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    void SeekDirct()
+    {
+        if (attacker.Count != 0)
+        {
+            float r = radius + 0.6f;
+            float m = Mathf.Cos(Mathf.PI / 4) * r;
+            dirct.Add((Vector2)transform.position + new Vector2(r, 0));
+            dirct.Add((Vector2)transform.position + new Vector2(m, m));
+            dirct.Add((Vector2)transform.position + new Vector2(0, r));
+            dirct.Add((Vector2)transform.position + new Vector2(-m, m));
+            dirct.Add((Vector2)transform.position + new Vector2(-r, 0));
+            dirct.Add((Vector2)transform.position + new Vector2(-m, -m));
+            dirct.Add((Vector2)transform.position + new Vector2(0, -r));
+            dirct.Add((Vector2)transform.position + new Vector2(m, -m));
+        }
+    }
+
+    Vector2 GetAttackPoint2(int i1, int i2, GameObject unit)
+    {
+        if (dirctRes[i1] == unit)
+        {
+            return dirct[i1];
+        }
+        else if (dirctRes[i2] == unit)
+        {
+            return dirct[i2];
+        }
+        else if (dirctRes[i1] == null)
+        {
+            int k = dirctRes.IndexOf(unit);
+            if (k != -1)
+            {
+                dirctRes.Remove(unit);
+                dirctRes.Insert(k, null);
+            }
+            dirctRes[i1] = unit;
+            return dirct[i1];
+        }
+        else if (dirctRes[i2] == null)
+        {
+            int k = dirctRes.IndexOf(unit);
+            if (k != -1)
+            {
+                dirctRes.Remove(unit);
+                dirctRes.Insert(k, null);
+            }
+            dirctRes[i2] = unit;
+            return dirct[i2];
+        }
+        else if (i1 == i2)
+        {
+            return transform.position;
+        }
+        else if (i1 == 0)
+        {
+            return GetAttackPoint2(7, i2 + 1, unit);
+        }
+        else if (i2 == 7)
+        {
+            return GetAttackPoint2(i1, 0, unit);
+        }
+        else
+        {
+            return GetAttackPoint2(i1 - 1, i2 + 1, unit);
+        }
+    }
+
+    Vector2 GetAttackPoint(int index, GameObject unit)
+    {
+        if (dirctRes[index] == unit)
+        {
+            return dirct[index];
+        }
+        else if (dirctRes[index] == null)
+        {
+            int k = dirctRes.IndexOf(unit);
+            if (k != -1)
+            {
+                dirctRes.Remove(unit);
+                dirctRes.Insert(k, null);
+            }
+            dirctRes[index] = unit;
+            return dirct[index];
+        }
+        else if (index == 0)
+        {
+            return GetAttackPoint2(1, 7, unit);
+        }
+        else if (index == 7)
+        {
+            return GetAttackPoint2(0, 6, unit);
+        }
+        else
+        {
+            return GetAttackPoint2(index - 1, index + 1, unit);
+        }
+    }
+
+    void GiveAtkPoint()
+    {
+        if (attacker.Count != 0)
+        {
+            attacker.Sort(CompareDis);
+            foreach(GameObject unit in attacker)
+            {
+                Vector2 t1 = unit.transform.position - transform.position;
+                Vector2 uvect = t1 / t1.magnitude;
+                float vx = uvect.x;
+                float vy = uvect.y;
+                float m = Mathf.Sin(Mathf.PI / 8);
+                float n = Mathf.Cos(Mathf.PI / 8);
+                if (vx >= 0)
+                {
+                    if (vy >= -m && vy <= m)
+                    {
+                        unit.GetComponent<BasicUnits>().atkPoint = GetAttackPoint(0, unit);
+                    }
+                    if (vy >= m && vy <= n)
+                    {
+                        unit.GetComponent<BasicUnits>().atkPoint = GetAttackPoint(1, unit);
+                    }
+                    if (vy >= n)
+                    {
+                        unit.GetComponent<BasicUnits>().atkPoint = GetAttackPoint(2, unit);
+                    }
+                    if (vy <= -m && vy >= -n)
+                    {
+                        unit.GetComponent<BasicUnits>().atkPoint = GetAttackPoint(7, unit);
+                    }
+                    if (vy <= -n)
+                    {
+                        unit.GetComponent<BasicUnits>().atkPoint = GetAttackPoint(6, unit);
+                    }
+                }
+                if (vx < 0)
+                {
+                    if (vy >= -m && vy <= m)
+                    {
+                        unit.GetComponent<BasicUnits>().atkPoint = GetAttackPoint(4, unit);
+                    }
+                    if (vy >= m && vy <= n)
+                    {
+                        unit.GetComponent<BasicUnits>().atkPoint = GetAttackPoint(3, unit);
+                    }
+                    if (vy <= -m && vy >= -n)
+                    {
+                        unit.GetComponent<BasicUnits>().atkPoint = GetAttackPoint(5, unit);
+                    }
+                }
+            }
+        }
+    }
+
     void killed()
     {
         if (HP <= 0)
         {
+            CancelTar();
+            CancelArea();
             Destroy(gameObject);
+        }
+    }
+    public void AddTar(GameObject tar) // tool method
+    {
+        tarEnemy = tar;
+        tarEnemy.GetComponent<BasicUnits>().attacker.Add(gameObject);
+        state = 2; // attack tarEnemy
+        CancelArea();
+        follow = null;
+        isSeeking = false;
+        setPosition = null;
+    }
+
+    public void AddArea(GameObject area) // tool method
+    {
+        areaEnemy = area;
+        areaEnemy.GetComponent<BasicUnits>().attacker.Add(gameObject);
+    }
+
+    public void CancelTar() // tool method
+    {
+        if (tarEnemy != null)
+        {
+            tarEnemy.GetComponent<BasicUnits>().attacker.Remove(gameObject);
+            int k = tarEnemy.GetComponent<BasicUnits>().dirctRes.IndexOf(gameObject);
+            if (k != -1)
+            {
+                tarEnemy.GetComponent<BasicUnits>().dirctRes.Remove(gameObject);
+                tarEnemy.GetComponent<BasicUnits>().dirctRes.Insert(k, null);
+            }
+            tarEnemy = null;
+        }
+    }
+    public void CancelArea() // tool method
+    {
+        if (areaEnemy != null)
+        {
+            areaEnemy.GetComponent<BasicUnits>().attacker.Remove(gameObject);
+            int k = areaEnemy.GetComponent<BasicUnits>().dirctRes.IndexOf(gameObject);
+            if (k != -1)
+            {
+                areaEnemy.GetComponent<BasicUnits>().dirctRes.Remove(gameObject);
+                areaEnemy.GetComponent<BasicUnits>().dirctRes.Insert(k, null);
+            }
+            areaEnemy = null;
         }
     }
 
@@ -247,6 +481,7 @@ public class BasicUnits : MonoBehaviour
     {
         if (state == 0 && setPosition != null && !isSeeking) // stop
         {
+            
             if ((Vector2)transform.position != (Vector2)setPosition)
             {
                 
@@ -277,13 +512,12 @@ public class BasicUnits : MonoBehaviour
             }
             else if (tarEnemy.GetComponent<SpriteRenderer>().enabled)
             {
-                transform.position = Moveing(tarEnemy.transform.position);
+                transform.position = Moveing(atkPoint);
             }
             else
             {
-                state = 4;
-                tarPoint = tarEnemy.transform.position;
-                tarEnemy = null;
+
+                CancelTar();
             }
         }
         else if (state == 3 && !isSeeking) // follow my unit
@@ -300,7 +534,7 @@ public class BasicUnits : MonoBehaviour
         
         if (isSeeking && !isClosed) // seek to the areaEnemy
         {
-            transform.position = Moveing(areaEnemy.transform.position);
+            transform.position = Moveing(atkPoint);
         }
     }
     void tarPosition()
@@ -310,6 +544,7 @@ public class BasicUnits : MonoBehaviour
             tarEnemyPos = tarEnemy.transform.position;
         }
     }
+
     void Attacking()
     {
         if(isClosed)
@@ -355,9 +590,10 @@ public class BasicUnits : MonoBehaviour
 
     void checkenemies()
     {
+
         if (state != 1 && state != 2 && !isSeeking && !(state == 0 && setPosition != null))
         {
-            
+
             ArrayList enemieslist = new ArrayList();
             ArrayList dis = new ArrayList();
             Collider2D[] enemies = Physics2D.OverlapCircleAll(transform.position, 4f);
@@ -390,7 +626,7 @@ public class BasicUnits : MonoBehaviour
                     }
                     indexc++;
                 }
-                areaEnemy = (GameObject)enemieslist[index];
+                AddArea((GameObject)enemieslist[index]);
                 setPosition = transform.position;
                 isSeeking = true;
             }
@@ -404,7 +640,7 @@ public class BasicUnits : MonoBehaviour
             if (areaEnemy == null || Vector2.Distance((Vector2)setPosition, transform.position) > seek || !areaEnemy.GetComponent<SpriteRenderer>().enabled)
             {
                 isSeeking = false;
-                areaEnemy = null;
+                CancelArea();
                 if (state != 0)
                 {
                     setPosition = null;
@@ -420,8 +656,8 @@ public class BasicUnits : MonoBehaviour
             state = 0;
             isSeeking = false;
             follow = null;
-            tarEnemy = null;
-            areaEnemy = null;
+            CancelTar();
+            CancelArea();
             setPosition = null;
         }
     }
@@ -485,8 +721,8 @@ public class BasicUnits : MonoBehaviour
             if (click.Length == 0 || click[0].GetComponent<BasicUnits>() == null)
             {
                 state = 1; // receive ToMove order;
-                tarEnemy = null;
-                areaEnemy = null;
+                CancelTar();
+                CancelArea();
                 follow = null;
                 isSeeking = false;
                 setPosition = null;
@@ -499,20 +735,20 @@ public class BasicUnits : MonoBehaviour
                     state = 0; // stop
                     isSeeking = false;
                     follow = null;
-                    tarEnemy = null;
-                    areaEnemy = null;
+                    CancelTar();
+                    CancelArea();
                     setPosition = null;
                 }
                 else if (tar.GetComponent<BasicUnits>().team != team)
                 {
-                    tarEnemy = ToAttack(tar.gameObject);
+                    AddTar(tar.gameObject);
                 }
                 else
                 {
                     state = 3; // follow my units
                     follow = tar.gameObject;
-                    tarEnemy = null;
-                    areaEnemy = null;
+                    CancelTar();
+                    CancelArea();
                     isSeeking = false;
                     setPosition = null;
                 }
@@ -527,6 +763,8 @@ public class BasicUnits : MonoBehaviour
 
     void Update()
     {
+        SeekDirct();
+        GiveAtkPoint();
         Circle();
         killed();
         /*IsSeen();*/
