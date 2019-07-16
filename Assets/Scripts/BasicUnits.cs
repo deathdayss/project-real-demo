@@ -20,6 +20,7 @@ public class BasicUnits : MonoBehaviour
     public float arExp;
     public float sight = 7;
     public float seek;
+    public int indexOfChos;
     public int team = 1;
     public int state = 0; // initial state is stop
     public bool atkMode = true;
@@ -45,6 +46,9 @@ public class BasicUnits : MonoBehaviour
     public List<GameObject> seenThings = new List<GameObject>();
     public List<GameObject> dirctRes = new List<GameObject>();
     public List<Vector2> dirct = new List<Vector2>();
+    public Collision2D temCollision;
+    float colli = 0;
+    bool collis = false;
 
 
     void Start()
@@ -91,6 +95,7 @@ public class BasicUnits : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        temCollision = collision;
         if (state == 3 && collision.gameObject == follow)
         {
             state = 0;
@@ -113,6 +118,63 @@ public class BasicUnits : MonoBehaviour
             state = 0;
             gameObject.GetComponent<Collider2D>().bounds.Encapsulate(tarPoint);
         }*/
+        /*if (collision.gameObject != tarEnemy && collision.gameObject != areaEnemy)
+        {
+            Debug.Log("f");
+            Vector2 line = collision.transform.position - transform.position;
+            Vector2 uLine = line / line.magnitude;
+            Vector2 change = new Vector2(- uLine.y, uLine.x);
+            Moveing((Vector2)transform.position + change);
+        }*/
+    }
+    /*void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision == temCollision)
+        {
+            colli += Time.deltaTime;
+            if (colli > 1)
+            {
+                collis = true;
+                CheckCollision();
+            }
+        }
+    }*/
+    void CheckCollision()
+    {
+        if (temCollision != null && collis)
+        {
+            Debug.Log("arrive");
+            if (temCollision.gameObject != tarEnemy && temCollision.gameObject != areaEnemy)
+            {
+                /*Debug.Log("f");
+                Vector2 uLine = line / length;
+                Vector2 change = new Vector2(-uLine.y, uLine.x);
+                Moveing((Vector2)transform.position + change);*/
+                Vector2 line = temCollision.transform.position - transform.position;
+                float length = line.magnitude;
+                if (length < 0.8f)
+                {
+                    
+                    Vector2 uLine = line / length;
+                    
+                    Vector2 change = 1.4f * new Vector2(-uLine.y, uLine.x);
+                    transform.position = Moveing((Vector2)transform.position + change);
+                }
+                else
+                {
+                    temCollision = null;
+                    collis = false;
+                    colli = 0;
+                }
+            }
+            else
+            {
+                temCollision = null;
+                colli = 0;
+                collis = false;
+            }
+            
+        }
     }
       
     void Circle()
@@ -273,6 +335,7 @@ public class BasicUnits : MonoBehaviour
     {
         if (attacker.Count != 0)
         {
+            dirct.Clear();
             float r = radius + 0.6f;
             float m = Mathf.Cos(Mathf.PI / 4) * r;
             dirct.Add((Vector2)transform.position + new Vector2(r, 0));
@@ -512,6 +575,10 @@ public class BasicUnits : MonoBehaviour
             }
             else if (tarEnemy.GetComponent<SpriteRenderer>().enabled)
             {
+                if ((Vector2)transform.position == atkPoint)
+                {
+                    atkPoint = tarEnemy.transform.position;
+                }
                 transform.position = Moveing(atkPoint);
             }
             else
@@ -534,14 +601,19 @@ public class BasicUnits : MonoBehaviour
         
         if (isSeeking && !isClosed) // seek to the areaEnemy
         {
-            transform.position = Moveing(areaEnemy.transform.position); // Epic Trouble. Must be understood and solved
-            /*transform.position = Moveing(atkPoint);*/
+            if ((Vector2)transform.position == atkPoint)
+            {
+                atkPoint = areaEnemy.transform.position;
+            }
+            /*transform.position = Moveing(areaEnemy.transform.position);*/ // Epic Trouble. Must be understood and solved
+            transform.position = Moveing(atkPoint);
         }
     }
     void tarPosition()
     {
         if (state == 2 && tarEnemy != null)
         {
+
             tarEnemyPos = tarEnemy.transform.position;
         }
     }
@@ -637,8 +709,6 @@ public class BasicUnits : MonoBehaviour
      
     void SeekEnemy()
     {
-        Debug.Log(setPosition);
-        Debug.Log(areaEnemy);
         if(isSeeking)
         {
             if (areaEnemy == null || Vector2.Distance((Vector2)setPosition, transform.position) > seek || !areaEnemy.GetComponent<SpriteRenderer>().enabled)
@@ -715,15 +785,124 @@ public class BasicUnits : MonoBehaviour
             }
         }
     }*/
+    public void TarPoint(Vector2 click)
+    {
+        float k = 2.2f;
+        Vector2 uUp = k * new Vector2(0, 0.5f);
+        Vector2 uRight = k * new Vector2(0.5f, 0);
+        Vector2 uDown = k * new Vector2(0, -0.5f);
+        Vector2 uLeft = k * new Vector2(-0.5f, 0);
+        if (indexOfChos == 0)
+        {
+            tarPoint = click;
+        }
+        else if (indexOfChos == 1)
+        {
+            tarPoint = click + uUp;
+        }
+        else if (indexOfChos == 2)
+        {
+            tarPoint = click + uRight;
+        }
+        else if (indexOfChos == 3)
+        {
+            tarPoint = click + uDown;
+        }
+        else if (indexOfChos == 4)
+        {
+            tarPoint = click + uLeft;
+        }
+        else if (indexOfChos == 5)
+        {
+            tarPoint = click + uUp + uLeft;
+        }
+        else if (indexOfChos == 6)
+        {
+            tarPoint = click + uRight + uDown;
+        }
+        else if (indexOfChos == 7)
+        {
+            tarPoint = click + uDown + uLeft;
+        }
+        else if (indexOfChos == 8)
+        {
+            tarPoint = click + uLeft + uUp;
+        }
+        else if (indexOfChos == 9)
+        {
+            tarPoint = click + 2 * uUp;
+        }
+        else if (indexOfChos == 10)
+        {
+            tarPoint = click + 2 * uRight;
+        }
+        else if (indexOfChos == 11)
+        {
+            tarPoint = click + 2 * uDown;
+        }
+        else if (indexOfChos == 12)
+        {
+            tarPoint = click + 2 * uLeft;
+        }
+        else if (indexOfChos == 13)
+        {
+            tarPoint = click + 2 * uUp + uRight;
+        }
+        else if (indexOfChos == 14)
+        {
+            tarPoint = click + 2 * uRight + uUp;
+        }
+        else if (indexOfChos == 15)
+        {
+            tarPoint = click + 2*uRight + uDown;
+        }
+        else if (indexOfChos == 16)
+        {
+            tarPoint = click + 2 * uDown + uRight;
+        }
+        else if (indexOfChos == 17)
+        {
+            tarPoint = click + 2 * uDown + uLeft;
+        }
+        else if (indexOfChos == 18)
+        {
+            tarPoint = click + 2 * uLeft + uDown;
+        }
+        else if (indexOfChos == 19)
+        {
+            tarPoint = click + 2 * uLeft + uUp;
+        }
+        else if (indexOfChos == 20)
+        {
+            tarPoint = click + 2 * uUp + uLeft;
+        }
+        else if (indexOfChos == 21)
+        {
+            tarPoint = click + 2 * uRight + 2 * uUp;
+        }
+        else if (indexOfChos == 22)
+        {
+            tarPoint = click + 2 * uRight + 2 * uDown;
+        }
+        else if (indexOfChos == 23)
+        {
+            tarPoint = click + 2 * uLeft + 2 * uDown;
+        }
+        else if (indexOfChos == 24)
+        {
+            tarPoint = click + 2 * uUp + 2 * uLeft;
+        }
+    }
 
     void RClick()
     {
         if (Input.GetMouseButtonDown(1) && player.isOrign)
         {
-            tarPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            click = Physics2D.OverlapCircleAll(tarPoint, 0.1f);
+            Vector2 tarPointk = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            click = Physics2D.OverlapCircleAll(tarPointk, 0.1f);
             if (click.Length == 0 || click[0].GetComponent<BasicUnits>() == null)
             {
+                TarPoint(tarPointk);
                 state = 1; // receive ToMove order;
                 CancelTar();
                 CancelArea();
@@ -767,8 +946,9 @@ public class BasicUnits : MonoBehaviour
 
     void Update()
     {
-        /*SeekDirct();
-        GiveAtkPoint();*/
+        CheckCollision();
+        SeekDirct();
+        GiveAtkPoint();
         Circle();
         killed();
         /*IsSeen();*/
@@ -785,7 +965,10 @@ public class BasicUnits : MonoBehaviour
         tarPosition();
         checkenemies();
         SeekEnemy();
-        State();
+        if (temCollision == null)
+        {
+           State();
+        }
         CanAttack();
         Attacking();
     }

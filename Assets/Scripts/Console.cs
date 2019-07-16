@@ -36,6 +36,17 @@ public class Console : MonoBehaviour
         lineDown.GetComponent<SpriteRenderer>().enabled = false;
         lineUp.GetComponent<SpriteRenderer>().enabled = false;
     }
+    void ChoseIndex()
+    {
+        int m = chosen.Count;
+        if (m != 0)
+        {
+            for (int i = 0; i < chosen.Count; i++)
+            {
+                chosen[i].GetComponent<BasicUnits>().indexOfChos = i; 
+            }
+        }
+    }
     void AdjustCam()
     {
         if (Input.GetKeyDown("c"))
@@ -174,7 +185,6 @@ public class Console : MonoBehaviour
             foreach (GameObject unit in chosen)
             {
                 unit.GetComponent<BasicUnits>().setPosition = null;
-                unit.GetComponent<BasicUnits>().tarPoint = tarPoint;
                 if (click.Length != 0 && click[0].GetComponent<BasicUnits>() != null)
                 {
                     if (click[0].gameObject == unit)
@@ -188,6 +198,7 @@ public class Console : MonoBehaviour
                 }
                 else
                 {
+                    unit.GetComponent<BasicUnits>().TarPoint(tarPoint);
                     unit.GetComponent<BasicUnits>().state = 4; // attack at an point
                     unit.GetComponent<BasicUnits>().CancelTar();
                     unit.GetComponent<BasicUnits>().CancelArea();
@@ -220,6 +231,7 @@ public class Console : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        ChoseIndex();
         AdjustCam();
         ModeAtk();
         
