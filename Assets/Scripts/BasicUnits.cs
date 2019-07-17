@@ -6,6 +6,7 @@ using UnityEditor;
 public class BasicUnits : MonoBehaviour
 {
     public int HP;
+    public int maxHp;
     public int phAtk;
     public int mgAtk;
     public float phDef;
@@ -20,6 +21,9 @@ public class BasicUnits : MonoBehaviour
     public float arExp;
     public float sight = 7;
     public float seek;
+    public float barX = -0.06f;
+    public float barY = 0.897f;
+    public float barK = 0.5f;
     public int indexOfChos;
     public int team = 1;
     public int state = 0; // initial state is stop
@@ -28,6 +32,7 @@ public class BasicUnits : MonoBehaviour
     public Console player;
     public Rigidbody2D myBody;
     public GameObject circle;
+    public GameObject HpBar;
     public GameObject tarEnemy = null;
     float time = 0;
     float timeHelper = 0;
@@ -49,6 +54,7 @@ public class BasicUnits : MonoBehaviour
     public Collision2D temCollision;
     float colli = 0;
     bool collis = false;
+    public float avoid = 0.7f;
 
 
     void Start()
@@ -76,7 +82,7 @@ public class BasicUnits : MonoBehaviour
             dirctRes.Add(null);
         }
     }
-    
+
 
     /*public GameObject ToAttack(GameObject tar)
     {
@@ -87,7 +93,21 @@ public class BasicUnits : MonoBehaviour
         setPosition = null;
         return tar.gameObject;
     }*/
-
+     void BarChange()
+    {
+        float m = (float)HP / (float)maxHp;
+        float r = 2 * (1 - m);
+        float g = 1;
+        if (r >= 1)
+        {
+            r = 1;
+            g = 2 * m;
+        }
+        HpBar.GetComponent<Renderer>().material.color = new Color(r, g, 0, 1);
+        
+        HpBar.transform.position = new Vector2(transform.position.x + barX - (1 - m) * 1.25f * barK, transform.position.y + barY);
+        HpBar.transform.localScale = new Vector3(barK * m, 1f, 1f);
+    }
     Vector2 Moveing(Vector2 place)
     {
         return Vector2.MoveTowards(transform.position, place, movSpd * Time.deltaTime);
@@ -141,9 +161,8 @@ public class BasicUnits : MonoBehaviour
     }*/
     void CheckCollision()
     {
-        if (temCollision != null && collis)
+        if (temCollision != null)
         {
-            Debug.Log("arrive");
             if (temCollision.gameObject != tarEnemy && temCollision.gameObject != areaEnemy)
             {
                 /*Debug.Log("f");
@@ -152,11 +171,10 @@ public class BasicUnits : MonoBehaviour
                 Moveing((Vector2)transform.position + change);*/
                 Vector2 line = temCollision.transform.position - transform.position;
                 float length = line.magnitude;
-                if (length < 0.8f)
+                if (length < avoid)
                 {
                     
                     Vector2 uLine = line / length;
-                    
                     Vector2 change = 1.4f * new Vector2(-uLine.y, uLine.x);
                     transform.position = Moveing((Vector2)transform.position + change);
                 }
@@ -172,8 +190,7 @@ public class BasicUnits : MonoBehaviour
                 temCollision = null;
                 colli = 0;
                 collis = false;
-            }
-            
+            }            
         }
     }
       
@@ -336,7 +353,7 @@ public class BasicUnits : MonoBehaviour
         if (attacker.Count != 0)
         {
             dirct.Clear();
-            float r = radius + 0.6f;
+            float r = radius + 0.5f;
             float m = Mathf.Cos(Mathf.PI / 4) * r;
             dirct.Add((Vector2)transform.position + new Vector2(r, 0));
             dirct.Add((Vector2)transform.position + new Vector2(m, m));
@@ -491,6 +508,10 @@ public class BasicUnits : MonoBehaviour
         {
             CancelTar();
             CancelArea();
+            if (isChosen)
+            {
+                player.chosen.Remove(gameObject);
+            }
             Destroy(gameObject);
         }
     }
@@ -542,7 +563,7 @@ public class BasicUnits : MonoBehaviour
 
     void State()
     {
-        if (state == 0 && setPosition != null && !isSeeking) // stop
+        if (state == 0 && setPosition != null && !isSeeking && temCollision == null) // stop
         {
             
             if ((Vector2)transform.position != (Vector2)setPosition)
@@ -555,7 +576,7 @@ public class BasicUnits : MonoBehaviour
                 setPosition = null;
             }
         }
-        if (state == 1 || (state == 4 && !isSeeking)) // move/attack to the place
+        if ((state == 1 || (state == 4 && !isSeeking)) && temCollision == null) // move/attack to the place
         {
             if ((Vector2)transform.position == tarPoint)
             {
@@ -566,7 +587,7 @@ public class BasicUnits : MonoBehaviour
                 transform.position = Moveing(tarPoint);
             }
         }
-        else if (state == 2 && !isClosed) // attack tarenemy
+        else if (state == 2 && !isClosed && temCollision == null) // attack tarenemy
         {
             if (tarEnemy == null)
             {
@@ -587,7 +608,7 @@ public class BasicUnits : MonoBehaviour
                 CancelTar();
             }
         }
-        else if (state == 3 && !isSeeking) // follow my unit
+        else if (state == 3 && !isSeeking && temCollision == null) // follow my unit
         {
             if (follow == null)
             {
@@ -599,7 +620,7 @@ public class BasicUnits : MonoBehaviour
             }
         }
         
-        if (isSeeking && !isClosed) // seek to the areaEnemy
+        if (isSeeking && !isClosed && temCollision == null) // seek to the areaEnemy
         {
             if ((Vector2)transform.position == atkPoint)
             {
@@ -664,7 +685,7 @@ public class BasicUnits : MonoBehaviour
     void checkenemies()
     {
 
-        if (state != 1 && state != 2 && !isSeeking && !(state == 0 && setPosition != null))
+        if (state != 1 && state != 2 && !(state == 0 && setPosition != null))
         {
 
             ArrayList enemieslist = new ArrayList();
@@ -896,7 +917,7 @@ public class BasicUnits : MonoBehaviour
 
     void RClick()
     {
-        if (Input.GetMouseButtonDown(1) && player.isOrign)
+        if (Input.GetMouseButtonDown(1) && player.isOrign && !player.ishold)
         {
             Vector2 tarPointk = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             click = Physics2D.OverlapCircleAll(tarPointk, 0.1f);
@@ -946,11 +967,13 @@ public class BasicUnits : MonoBehaviour
 
     void Update()
     {
+        BarChange();
+        killed();
         CheckCollision();
         SeekDirct();
         GiveAtkPoint();
         Circle();
-        killed();
+        
         /*IsSeen();*/
         Layer();
         See();

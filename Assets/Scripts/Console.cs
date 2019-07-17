@@ -10,11 +10,14 @@ public class Console : MonoBehaviour
     public int source;
     public bool isModeAtk = false;
     public bool isOrign = true;
+    public bool ishold;
     public Transform cam;
     public GameObject lineLeft;
     public GameObject lineRight;
     public GameObject lineDown;
     public GameObject lineUp;
+    public GameObject orignalMouse;
+    public GameObject targetMouse;
     public List<GameObject> myUnits = new List<GameObject>();
     public List<GameObject> chosen = new List<GameObject>();
     List<GameObject> team1 = new List<GameObject>();
@@ -26,7 +29,7 @@ public class Console : MonoBehaviour
     Vector2 box1;
     Vector2 box1S;
     bool camMove = false;
-    bool ishold;
+    
     
 
     private void Start()
@@ -35,6 +38,20 @@ public class Console : MonoBehaviour
         lineRight.GetComponent<SpriteRenderer>().enabled = false;
         lineDown.GetComponent<SpriteRenderer>().enabled = false;
         lineUp.GetComponent<SpriteRenderer>().enabled = false;
+        Cursor.visible = true;
+        orignalMouse.GetComponent<SpriteRenderer>().enabled = true;
+        targetMouse.GetComponent<SpriteRenderer>().enabled = false;
+    }
+    void CursorAdjust()
+    {
+        Vector2 place = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 place1 = new Vector2(place.x + 0.07f, place.y - 0.1f);
+        orignalMouse.transform.position = place1;
+        targetMouse.transform.position = place;
+        if (Input.GetKeyDown("m"))
+        {
+            Cursor.visible = !Cursor.visible;
+        }
     }
     void ChoseIndex()
     {
@@ -105,10 +122,10 @@ public class Console : MonoBehaviour
                 lineDown.transform.position = v2;
                 float scaleH = Mathf.Abs(box1S.x - boxedS.x)/2070f;
                 float scaleV = Mathf.Abs(box1S.y - boxedS.y)/1170f;
-                lineLeft.transform.localScale = new Vector2(1, scaleV);
-                lineRight.transform.localScale = new Vector2(1, scaleV);
-                lineUp.transform.localScale = new Vector2(scaleH, 1);
-                lineDown.transform.localScale = new Vector2(scaleH, 1);
+                lineLeft.transform.localScale = new Vector2(0.5f, scaleV);
+                lineRight.transform.localScale = new Vector2(0.5f, scaleV);
+                lineUp.transform.localScale = new Vector2(scaleH, 0.5f);
+                lineDown.transform.localScale = new Vector2(scaleH, 0.5f);
             }
             if (Input.GetMouseButtonUp(0) && ishold)
             {
@@ -168,16 +185,20 @@ public class Console : MonoBehaviour
     }
     void ModeAtk()
     {
-        if (Input.GetKeyDown("a") && isOrign && chosen.Count != 0)
+        if (Input.GetKeyDown("a") && isOrign && chosen.Count != 0 && !ishold)
         {
+            orignalMouse.GetComponent<SpriteRenderer>().enabled = false;
+            targetMouse.GetComponent<SpriteRenderer>().enabled = true;
             isModeAtk = true;
             isOrign = false;
         }
     }
     public virtual void LClick()
     {
-        if (isModeAtk && Input.GetMouseButtonDown(0) && chosen.Count != 0)
+        if (isModeAtk && Input.GetMouseButtonDown(0) && chosen.Count != 0 && !ishold)
         {
+            orignalMouse.GetComponent<SpriteRenderer>().enabled = true;
+            targetMouse.GetComponent<SpriteRenderer>().enabled = false;
             isModeAtk = false;
             isOrign = true;
             Vector2 tarPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -211,11 +232,13 @@ public class Console : MonoBehaviour
     }
      void ExeModeAtk()
      {
-         if(isModeAtk)
+         if(isModeAtk && !ishold)
          {
              if (Input.GetMouseButtonDown(1))
              {
-                 isModeAtk = false;
+                orignalMouse.GetComponent<SpriteRenderer>().enabled = true;
+                targetMouse.GetComponent<SpriteRenderer>().enabled = false;
+                isModeAtk = false;
                  isOrign = true;
              }
          }
@@ -231,6 +254,8 @@ public class Console : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        CursorAdjust();
+        ExeModeAtk();
         ChoseIndex();
         AdjustCam();
         ModeAtk();
