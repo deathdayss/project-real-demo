@@ -26,6 +26,7 @@ public class ToMoveAnime : MonoBehaviour
             {
                 gameObject.GetComponent<SpriteRenderer>().enabled = false;
                 gameObject.GetComponent<Animator>().enabled = false;
+                gameObject.GetComponent<Animator>().Play("ToMovePoint");
                 isPlay = false;
                 time = 0;
             }

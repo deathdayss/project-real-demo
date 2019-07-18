@@ -260,14 +260,14 @@ public class Console : MonoBehaviour
                 else
                 {
                     atkPoint.transform.position = mouse;
-                    if (atkPoint.GetComponent<ToAttackAnime>().isPlay)
+                    if (atkPoint.GetComponent<ToMoveAnime>().isPlay)
                     {
-                        atkPoint.GetComponent<ToAttackAnime>().time = 0f;
-                        atkPoint.GetComponent<Animator>().Play("ToAttackpoint");
+                        atkPoint.GetComponent<ToMoveAnime>().time = 0f;
+                        atkPoint.GetComponent<Animator>().Play("ToMovePoint");
                     }
                     else
                     {
-                        atkPoint.GetComponent<ToAttackAnime>().isPlay = true;
+                        atkPoint.GetComponent<ToMoveAnime>().isPlay = true;
                     }
                     unit.GetComponent<BasicUnits>().TarPoint(mouse);
                     unit.GetComponent<BasicUnits>().state = 4; // attack at an point
