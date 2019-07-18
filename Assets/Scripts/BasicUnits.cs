@@ -31,33 +31,39 @@ public class BasicUnits : MonoBehaviour
     public bool isChosen = false;
     public Console player;
     public Rigidbody2D myBody;
+    public GameObject tarPointAnime;
     public GameObject circle;
+    public GameObject circleRed;
     public GameObject HpBar;
+    public GameObject HpBar1;
+    public GameObject HpBar2;
     public GameObject tarEnemy = null;
-    float time = 0;
-    float timeHelper = 0;
+    public float time = 0;
+    public float timeHelper = 0;
     public bool isSeeking = false;
-    bool isClosed = false;
-    int atk;
+    public bool isClosed = false;
+    public bool enemyChosen = false;
+    public int atk;
     public GameObject follow;
-    GameObject tarEnemyHelper = null;
+    public GameObject tarEnemyHelper = null;
     public GameObject areaEnemy = null;
     public Vector2 tarPoint;
     public Vector2 atkPoint;
     public Vector2? setPosition = null;
-    Vector2 tarEnemyPos;
-    Collider2D[] click;
+    public Vector2 tarEnemyPos;
+    public Collider2D[] click;
     public List<GameObject> attacker = new List<GameObject>();
     public List<GameObject> seenThings = new List<GameObject>();
     public List<GameObject> dirctRes = new List<GameObject>();
     public List<Vector2> dirct = new List<Vector2>();
     public Collision2D temCollision;
-    float colli = 0;
-    bool collis = false;
+    public float colli = 0;
+    public bool collis = false;
     public float avoid = 0.7f;
 
 
-    void Start()
+
+    public void Start()
     {
         if (team != 1)
         {
@@ -81,7 +87,11 @@ public class BasicUnits : MonoBehaviour
         {
             dirctRes.Add(null);
         }
-    }
+        HpBar.GetComponent<SpriteRenderer>().enabled = false;
+        HpBar1.GetComponent<SpriteRenderer>().enabled = false;
+        HpBar2.GetComponent<SpriteRenderer>().enabled = false;
+}
+
 
 
     /*public GameObject ToAttack(GameObject tar)
@@ -93,27 +103,40 @@ public class BasicUnits : MonoBehaviour
         setPosition = null;
         return tar.gameObject;
     }*/
-     void BarChange()
+    public void BarChange()
     {
-        float m = (float)HP / (float)maxHp;
-        float r = 2 * (1 - m);
-        float g = 1;
-        if (r >= 1)
+        if (gameObject.GetComponent<SpriteRenderer>().enabled == true)
         {
-            r = 1;
-            g = 2 * m;
+            HpBar.GetComponent<SpriteRenderer>().enabled = true;
+            HpBar1.GetComponent<SpriteRenderer>().enabled = true;
+            HpBar2.GetComponent<SpriteRenderer>().enabled = true;
+            float m = (float)HP / (float)maxHp;
+            float r = 2 * (1 - m);
+            float g = 1;
+            if (r >= 1)
+            {
+                r = 1;
+                g = 2 * m;
+            }
+            HpBar.GetComponent<Renderer>().material.color = new Color(r, g, 0, 1);
+
+            HpBar.transform.position = new Vector2(transform.position.x + barX - (1 - m) * 1.25f * barK, transform.position.y + barY);
+            HpBar.transform.localScale = new Vector3(barK * m, 1f, 1f);
         }
-        HpBar.GetComponent<Renderer>().material.color = new Color(r, g, 0, 1);
-        
-        HpBar.transform.position = new Vector2(transform.position.x + barX - (1 - m) * 1.25f * barK, transform.position.y + barY);
-        HpBar.transform.localScale = new Vector3(barK * m, 1f, 1f);
+        else
+        {
+            HpBar.GetComponent<SpriteRenderer>().enabled = false;
+            HpBar1.GetComponent<SpriteRenderer>().enabled = false;
+            HpBar2.GetComponent<SpriteRenderer>().enabled = false;
+        }
     }
-    Vector2 Moveing(Vector2 place)
+    public virtual Vector2 Moveing(Vector2 place)
     {
+        
         return Vector2.MoveTowards(transform.position, place, movSpd * Time.deltaTime);
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    public virtual void OnCollisionEnter2D(Collision2D collision)
     {
         temCollision = collision;
         if (state == 3 && collision.gameObject == follow)
@@ -159,7 +182,7 @@ public class BasicUnits : MonoBehaviour
             }
         }
     }*/
-    void CheckCollision()
+    public virtual void CheckCollision()
     {
         if (temCollision != null)
         {
@@ -193,20 +216,37 @@ public class BasicUnits : MonoBehaviour
             }            
         }
     }
-      
-    void Circle()
+
+    public virtual void Circle()
     {
-        if (isChosen)
+        if (gameObject.GetComponent<SpriteRenderer>().enabled)
         {
-            circle.GetComponent<SpriteRenderer>().enabled = true;
+            if (isChosen)
+            {
+                circle.GetComponent<SpriteRenderer>().enabled = true;
+            }
+            else
+            {
+                circle.GetComponent<SpriteRenderer>().enabled = false;
+            }
+            if (enemyChosen)
+            {
+                circleRed.GetComponent<SpriteRenderer>().enabled = true;
+            }
+            else
+            {
+                circleRed.GetComponent<SpriteRenderer>().enabled = false;
+            }
         }
         else
         {
+            enemyChosen = false;
             circle.GetComponent<SpriteRenderer>().enabled = false;
+            circleRed.GetComponent<SpriteRenderer>().enabled = false;
         }
     }
-    
-    void Layer()
+
+    public virtual void Layer()
     {
         if (team != 1)
         {
@@ -245,7 +285,7 @@ public class BasicUnits : MonoBehaviour
         }
     }*/
 
-    void See()
+    public virtual void See()
     {
         if (team == 1)
         {
@@ -282,7 +322,7 @@ public class BasicUnits : MonoBehaviour
         }
     }
 
-    void DeleteSeen()
+    public virtual void DeleteSeen()
     {
         if (seenThings.Count != 0)
         {
@@ -315,7 +355,7 @@ public class BasicUnits : MonoBehaviour
             }
         }
     }
-    private static int CompareDis(GameObject a, GameObject b)
+    public static int CompareDis(GameObject a, GameObject b)
     {
         float disA = 0;
         float disB = 0;
@@ -348,7 +388,7 @@ public class BasicUnits : MonoBehaviour
             return 0;
         }
     }
-    void SeekDirct()
+    public virtual void SeekDirct()
     {
         if (attacker.Count != 0)
         {
@@ -366,7 +406,7 @@ public class BasicUnits : MonoBehaviour
         }
     }
 
-    Vector2 GetAttackPoint2(int i1, int i2, GameObject unit)
+    public virtual Vector2 GetAttackPoint2(int i1, int i2, GameObject unit)
     {
         if (dirctRes[i1] == unit)
         {
@@ -416,7 +456,7 @@ public class BasicUnits : MonoBehaviour
         }
     }
 
-    Vector2 GetAttackPoint(int index, GameObject unit)
+    public virtual Vector2 GetAttackPoint(int index, GameObject unit)
     {
         if (dirctRes[index] == unit)
         {
@@ -447,11 +487,14 @@ public class BasicUnits : MonoBehaviour
         }
     }
 
-    void GiveAtkPoint()
+    public virtual void GiveAtkPoint()
     {
         if (attacker.Count != 0)
         {
-            attacker.Sort(CompareDis);
+            if (attacker.Count >= 2)
+            {
+                attacker.Sort(CompareDis);
+            }
             foreach(GameObject unit in attacker)
             {
                 Vector2 t1 = unit.transform.position - transform.position;
@@ -502,12 +545,17 @@ public class BasicUnits : MonoBehaviour
         }
     }
 
-    void killed()
+    public virtual void killed()
     {
         if (HP <= 0)
         {
             CancelTar();
             CancelArea();
+
+            if (player.enemyChoice == gameObject)
+            {
+                player.enemyChoice = null;
+            }
             if (isChosen)
             {
                 player.chosen.Remove(gameObject);
@@ -515,7 +563,7 @@ public class BasicUnits : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    public void AddTar(GameObject tar) // tool method
+    public virtual void AddTar(GameObject tar) // tool method
     {
         tarEnemy = tar;
         tarEnemy.GetComponent<BasicUnits>().attacker.Add(gameObject);
@@ -526,13 +574,13 @@ public class BasicUnits : MonoBehaviour
         setPosition = null;
     }
 
-    public void AddArea(GameObject area) // tool method
+    public virtual void AddArea(GameObject area) // tool method
     {
         areaEnemy = area;
         areaEnemy.GetComponent<BasicUnits>().attacker.Add(gameObject);
     }
 
-    public void CancelTar() // tool method
+    public virtual void CancelTar() // tool method
     {
         if (tarEnemy != null)
         {
@@ -546,7 +594,7 @@ public class BasicUnits : MonoBehaviour
             tarEnemy = null;
         }
     }
-    public void CancelArea() // tool method
+    public virtual void CancelArea() // tool method
     {
         if (areaEnemy != null)
         {
@@ -561,8 +609,9 @@ public class BasicUnits : MonoBehaviour
         }
     }
 
-    void State()
+    public virtual void State()
     {
+
         if (state == 0 && setPosition != null && !isSeeking && temCollision == null) // stop
         {
             
@@ -584,6 +633,7 @@ public class BasicUnits : MonoBehaviour
             }
             else
             {
+
                 transform.position = Moveing(tarPoint);
             }
         }
@@ -630,7 +680,7 @@ public class BasicUnits : MonoBehaviour
             transform.position = Moveing(atkPoint);
         }
     }
-    void tarPosition()
+    public virtual void tarPosition()
     {
         if (state == 2 && tarEnemy != null)
         {
@@ -639,7 +689,7 @@ public class BasicUnits : MonoBehaviour
         }
     }
 
-    void Attacking()
+    public virtual void Attacking()
     {
         if(isClosed)
         {
@@ -656,7 +706,7 @@ public class BasicUnits : MonoBehaviour
             }
         }
     }
-    void CanAttack()
+    public virtual void CanAttack()
     {
         if (isSeeking && areaEnemy != null)
         {
@@ -682,7 +732,7 @@ public class BasicUnits : MonoBehaviour
         }
     }
 
-    void checkenemies()
+    public virtual void checkenemies()
     {
 
         if (state != 1 && state != 2 && !(state == 0 && setPosition != null))
@@ -727,8 +777,8 @@ public class BasicUnits : MonoBehaviour
             }
         }
     }
-     
-    void SeekEnemy()
+
+    public virtual void SeekEnemy()
     {
         if(isSeeking)
         {
@@ -744,7 +794,7 @@ public class BasicUnits : MonoBehaviour
         }
     }
 
-    void PresS()
+    public virtual void PresS()
     {
         if (Input.GetKeyDown("s"))
         {
@@ -806,7 +856,7 @@ public class BasicUnits : MonoBehaviour
             }
         }
     }*/
-    public void TarPoint(Vector2 click)
+    public virtual void TarPoint(Vector2 click)
     {
         float k = 2.2f;
         Vector2 uUp = k * new Vector2(0, 0.5f);
@@ -915,7 +965,7 @@ public class BasicUnits : MonoBehaviour
         }
     }
 
-    void RClick()
+    public virtual void RClick()
     {
         if (Input.GetMouseButtonDown(1) && player.isOrign && !player.ishold)
         {
@@ -923,6 +973,16 @@ public class BasicUnits : MonoBehaviour
             click = Physics2D.OverlapCircleAll(tarPointk, 0.1f);
             if (click.Length == 0 || click[0].GetComponent<BasicUnits>() == null)
             {
+                tarPointAnime.transform.position = tarPointk;
+                if (tarPointAnime.GetComponent<ToMoveAnime>().isPlay)
+                {
+                    tarPointAnime.GetComponent<Animator>().Play("ToMovePoint");
+                    tarPointAnime.GetComponent<ToMoveAnime>().time = 0f;
+                }
+                else
+                {
+                    tarPointAnime.GetComponent<ToMoveAnime>().isPlay = true;
+                }
                 TarPoint(tarPointk);
                 state = 1; // receive ToMove order;
                 CancelTar();
@@ -965,7 +1025,7 @@ public class BasicUnits : MonoBehaviour
         }
     }
 
-    void Update()
+    public virtual void Update()
     {
         BarChange();
         killed();

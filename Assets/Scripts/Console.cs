@@ -20,12 +20,15 @@ public class Console : MonoBehaviour
     public GameObject targetMouse;
     public List<GameObject> myUnits = new List<GameObject>();
     public List<GameObject> chosen = new List<GameObject>();
+    public Vector2 mouse;
+    public GameObject fallin;
+    public GameObject atkPoint;
     List<GameObject> team1 = new List<GameObject>();
     List<GameObject> team2 = new List<GameObject>();
     List<GameObject> team3 = new List<GameObject>();
     List<GameObject> team4 = new List<GameObject>();
     List<GameObject> team5 = new List<GameObject>();
-    BasicUnits enemyChoice;
+    public GameObject enemyChoice;
     Vector2 box1;
     Vector2 box1S;
     bool camMove = false;
@@ -42,12 +45,38 @@ public class Console : MonoBehaviour
         orignalMouse.GetComponent<SpriteRenderer>().enabled = true;
         targetMouse.GetComponent<SpriteRenderer>().enabled = false;
     }
+    void ColorOfMouse()
+    {
+        Collider2D[] units = Physics2D.OverlapCircleAll(mouse, 0.1f);
+        if (units.Length != 0)
+        {
+            if (units[0].GetComponent<BasicUnits>().team == 1)
+            {
+                orignalMouse.GetComponent<Renderer>().material.color = new Color(0, 1, 0, 1);
+                targetMouse.GetComponent<Renderer>().material.color = new Color(0, 1, 0, 1);
+            }
+            else
+            {
+                orignalMouse.GetComponent<Renderer>().material.color = new Color(1, 0, 0, 1);
+                targetMouse.GetComponent<Renderer>().material.color = new Color(1, 0, 0, 1);
+
+            }
+        }
+        else
+        {
+            orignalMouse.GetComponent<Renderer>().material.color = new Color(1, 1, 1, 1);
+            targetMouse.GetComponent<Renderer>().material.color = new Color(1, 1, 1, 1);
+        }
+    }
+
+
+
     void CursorAdjust()
     {
-        Vector2 place = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 place1 = new Vector2(place.x + 0.07f, place.y - 0.1f);
+        mouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 place1 = new Vector2(mouse.x + 0.07f, mouse.y - 0.1f);
         orignalMouse.transform.position = place1;
-        targetMouse.transform.position = place;
+        targetMouse.transform.position = mouse;
         if (Input.GetKeyDown("m"))
         {
             Cursor.visible = !Cursor.visible;
@@ -107,11 +136,10 @@ public class Console : MonoBehaviour
                 lineDown.GetComponent<SpriteRenderer>().enabled = true;
                 lineUp.GetComponent<SpriteRenderer>().enabled = true;
                 Vector2 boxedS = Input.mousePosition;
-                Vector2 boxd = Camera.main.ScreenToWorldPoint(boxedS);
                 float x1 = box1.x;
-                float x2 = boxd.x;
+                float x2 = mouse.x;
                 float y1 = box1.y;
-                float y2 = boxd.y;
+                float y2 = mouse.y;
                 Vector2 h1 = new Vector2(x1, (y1 + y2) / 2);
                 Vector2 h2 = new Vector2(x2, (y1 + y2) / 2);
                 Vector2 v1 = new Vector2((x1 + x2) / 2, y1);
@@ -133,13 +161,17 @@ public class Console : MonoBehaviour
                 lineRight.GetComponent<SpriteRenderer>().enabled = false;
                 lineDown.GetComponent<SpriteRenderer>().enabled = false;
                 lineUp.GetComponent<SpriteRenderer>().enabled = false;
-                Vector2 box2 = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 ishold = false;
-                Collider2D[] myunits = Physics2D.OverlapAreaAll(box1, box2);
+                Collider2D[] myunits = Physics2D.OverlapAreaAll(box1, mouse);
                 List<GameObject> boxChoice = new List<GameObject>();
                 List<GameObject> enemyBox = new List<GameObject>();
                 if (myunits != null)
                 {
+                    if (enemyChoice != null)
+                    {
+                        enemyChoice.GetComponent<BasicUnits>().enemyChosen = false;
+                        enemyChoice = null;
+                    }
                     foreach (Collider2D unit in myunits)
                     {
                         BasicUnits mine1 = unit.GetComponent<BasicUnits>();
@@ -152,37 +184,46 @@ public class Console : MonoBehaviour
                             }
                             else
                             {
-                                enemyChoice = mine1; 
+                                enemyChoice = unit.gameObject;
                             }
                         }
-                        if (boxChoice.Count > 0)
+                    }
+                    if (boxChoice.Count > 0)
+                    {
+                        if (chosen.Count != 0)
                         {
-                            enemyChoice = null;
-                            if (chosen.Count != 0)
+                            foreach (GameObject a in chosen)
                             {
-                                foreach (GameObject a in chosen)
+                                if (!boxChoice.Contains(a) && a != null)
                                 {
-                                    if (!boxChoice.Contains(a) && a != null)
-                                    {
-                                        a.GetComponent<BasicUnits>().isChosen = false;
-                                    }
+                                    a.GetComponent<BasicUnits>().isChosen = false;
                                 }
                             }
-                            chosen = boxChoice;
                         }
-                        else if (enemyChoice != null)
+                        chosen = boxChoice;
+                        enemyChoice = null;
+                    }
+                    else 
+                    {
+                        if (enemyChoice != null && enemyChoice.GetComponent<SpriteRenderer>().enabled)
                         {
                             foreach (GameObject mine in chosen)
                             {
                                 mine.GetComponent<BasicUnits>().isChosen = false;
                             }
                             chosen.Clear();
+                            enemyChoice.GetComponent<BasicUnits>().enemyChosen = true;
+                        }
+                        else
+                        {
+                            enemyChoice = null;
                         }
                     }
                 }
             }
         }
     }
+    
     void ModeAtk()
     {
         if (Input.GetKeyDown("a") && isOrign && chosen.Count != 0 && !ishold)
@@ -201,8 +242,7 @@ public class Console : MonoBehaviour
             targetMouse.GetComponent<SpriteRenderer>().enabled = false;
             isModeAtk = false;
             isOrign = true;
-            Vector2 tarPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Collider2D[] click = Physics2D.OverlapCircleAll(tarPoint, 0.1f);
+            Collider2D[] click = Physics2D.OverlapCircleAll(mouse, 0.1f);
             foreach (GameObject unit in chosen)
             {
                 unit.GetComponent<BasicUnits>().setPosition = null;
@@ -219,7 +259,17 @@ public class Console : MonoBehaviour
                 }
                 else
                 {
-                    unit.GetComponent<BasicUnits>().TarPoint(tarPoint);
+                    atkPoint.transform.position = mouse;
+                    if (atkPoint.GetComponent<ToAttackAnime>().isPlay)
+                    {
+                        atkPoint.GetComponent<ToAttackAnime>().time = 0f;
+                        atkPoint.GetComponent<Animator>().Play("ToAttackpoint");
+                    }
+                    else
+                    {
+                        atkPoint.GetComponent<ToAttackAnime>().isPlay = true;
+                    }
+                    unit.GetComponent<BasicUnits>().TarPoint(mouse);
                     unit.GetComponent<BasicUnits>().state = 4; // attack at an point
                     unit.GetComponent<BasicUnits>().CancelTar();
                     unit.GetComponent<BasicUnits>().CancelArea();
@@ -254,6 +304,8 @@ public class Console : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        ColorOfMouse();
+        ColorOfMouse();
         CursorAdjust();
         ExeModeAtk();
         ChoseIndex();
