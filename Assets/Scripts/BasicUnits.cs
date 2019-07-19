@@ -558,6 +558,7 @@ public class BasicUnits : MonoBehaviour
         {
             if (attacker.Count >= 2)
             {
+                Debug.Log(attacker.Count);
                 attacker.Sort(CompareDis);
             }
             foreach(GameObject unit in attacker)
@@ -616,15 +617,16 @@ public class BasicUnits : MonoBehaviour
         {
             CancelTar();
             CancelArea();
-
             if (player.enemyChoice == gameObject)
             {
                 player.enemyChoice = null;
             }
-            if (isChosen)
-            {
-                player.chosen.Remove(gameObject);
-            }
+            player.chosen.Remove(gameObject);
+            player.team1.Remove(gameObject);
+            player.team2.Remove(gameObject);
+            player.team3.Remove(gameObject);
+            player.team4.Remove(gameObject);
+            player.team5.Remove(gameObject);
             Destroy(gameObject);
         }
     }
@@ -835,8 +837,11 @@ public class BasicUnits : MonoBehaviour
                     }
                     indexc++;
                 }
-                areaEnemy = (GameObject)enemieslist[index];
-                AddArea((GameObject)enemieslist[index]);
+                if (areaEnemy != (GameObject)enemieslist[index])
+                {
+                    areaEnemy = (GameObject)enemieslist[index];
+                    AddArea((GameObject)enemieslist[index]);
+                }
                 setPosition = transform.position;
                 isSeeking = true;
             }
@@ -1080,6 +1085,7 @@ public class BasicUnits : MonoBehaviour
                     if (tar.GetComponent<SpriteRenderer>().enabled)
                     {
                         tar.GetComponent<BasicUnits>().circleAnime = true;
+                        CancelArea();
                         AddTar(tar.gameObject);
                     }
                 }

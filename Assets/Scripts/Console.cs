@@ -11,6 +11,7 @@ public class Console : MonoBehaviour
     public bool isModeAtk = false;
     public bool isOrign = true;
     public bool ishold;
+    public bool armyMode = false;
     public Transform cam;
     public GameObject lineLeft;
     public GameObject lineRight;
@@ -23,11 +24,11 @@ public class Console : MonoBehaviour
     public Vector2 mouse;
     public GameObject fallin;
     public GameObject atkPoint;
-    List<GameObject> team1 = new List<GameObject>();
-    List<GameObject> team2 = new List<GameObject>();
-    List<GameObject> team3 = new List<GameObject>();
-    List<GameObject> team4 = new List<GameObject>();
-    List<GameObject> team5 = new List<GameObject>();
+    public List<GameObject> team1 = new List<GameObject>();
+    public List<GameObject> team2 = new List<GameObject>();
+    public List<GameObject> team3 = new List<GameObject>();
+    public List<GameObject> team4 = new List<GameObject>();
+    public List<GameObject> team5 = new List<GameObject>();
     public GameObject enemyChoice;
     Vector2 box1;
     Vector2 box1S;
@@ -45,6 +46,66 @@ public class Console : MonoBehaviour
         orignalMouse.GetComponent<SpriteRenderer>().enabled = true;
         targetMouse.GetComponent<SpriteRenderer>().enabled = false;
     }
+    void ArmyMode()
+    {
+        if (Input.GetKey(KeyCode.LeftControl) && chosen.Count != 0)
+        {
+            armyMode = true;
+        }
+        else
+        {
+            armyMode = false;
+        }
+    }
+
+    void GetArmy()
+    {
+        if (armyMode)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                Debug.Log("sad");
+                team1 = chosen;
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                team2 = chosen;
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                team3 = chosen;
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha4))
+            {
+                team4 = chosen;
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha5))
+            {
+                team5 = chosen;
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha1) && team1.Count != 0)
+        {
+            chosen = team1;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2) && team2.Count != 0)
+        {
+            chosen = team2;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3) && team3.Count != 0)
+        {
+            chosen = team3;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha4) && team4.Count != 0)
+        {
+            chosen = team4;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha5) && team5.Count != 0)
+        {
+            chosen = team5;
+        }
+    }
+
     void ColorOfMouse()
     {
         Collider2D[] units = Physics2D.OverlapCircleAll(mouse, 0.1f);
@@ -260,10 +321,13 @@ public class Console : MonoBehaviour
                 {
                     if (click[0].gameObject == unit)
                     {
+                        unit.GetComponent<BasicUnits>().CancelArea();
+                        unit.GetComponent<BasicUnits>().CancelTar();
                         unit.GetComponent<BasicUnits>().state = 0;
                     }
                     else if (click[0].GetComponent<SpriteRenderer>().enabled)
                     {
+                        unit.GetComponent<BasicUnits>().CancelArea();
                         click[0].GetComponent<BasicUnits>().circleAnime = true;
                         unit.GetComponent<BasicUnits>().AddTar(click[0].gameObject);
                     }
@@ -315,6 +379,8 @@ public class Console : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        ArmyMode();
+        GetArmy();
         ColorOfMouse();
         ColorOfMouse();
         CursorAdjust();
