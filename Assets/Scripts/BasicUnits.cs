@@ -40,6 +40,8 @@ public class BasicUnits : MonoBehaviour
     public GameObject tarEnemy = null;
     public float time = 0;
     public float timeHelper = 0;
+    public float timeAnime = 0;
+    public bool circleAnime = false;
     public bool isSeeking = false;
     public bool isClosed = false;
     public bool enemyChosen = false;
@@ -87,11 +89,66 @@ public class BasicUnits : MonoBehaviour
         {
             dirctRes.Add(null);
         }
+        circle.GetComponent<SpriteRenderer>().enabled = false;
+        circleRed.GetComponent<SpriteRenderer>().enabled = false;
         HpBar.GetComponent<SpriteRenderer>().enabled = false;
         HpBar1.GetComponent<SpriteRenderer>().enabled = false;
         HpBar2.GetComponent<SpriteRenderer>().enabled = false;
 }
 
+    public void CircleAnime()
+    {
+        
+        if (circleAnime)
+        {
+            
+            if (gameObject.GetComponent<SpriteRenderer>().enabled)
+            {
+                if (team == 1 && !isChosen)
+                {
+                    circle.GetComponent<SpriteRenderer>().enabled = true;
+                    timeAnime += Time.deltaTime;
+                    if (timeAnime >= 0.35)
+                    {
+                        circle.GetComponent<SpriteRenderer>().enabled = false;
+                    }
+                    if (timeAnime >= 0.7)
+                    {
+                        circle.GetComponent<SpriteRenderer>().enabled = true;
+                    }
+                    if (timeAnime >= 1.05)
+                    {
+                        circle.GetComponent<SpriteRenderer>().enabled = false;
+                        circleAnime = false;
+                        timeAnime = 0;
+                    }
+                }
+                else if (team != 1)
+                {
+                    circleRed.GetComponent<SpriteRenderer>().enabled = true;
+                    timeAnime += Time.deltaTime;
+                    if (timeAnime >= 0.35)
+                    {
+                        circleRed.GetComponent<SpriteRenderer>().enabled = false;
+                    }
+                    if (timeAnime >= 0.7)
+                    {
+                        circleRed.GetComponent<SpriteRenderer>().enabled = true;
+                    }
+                    if (timeAnime >= 1.05)
+                    {
+                        circleRed.GetComponent<SpriteRenderer>().enabled = false;
+                        circleAnime = false;
+                        timeAnime = 0;
+                    }
+                }
+            }
+            else
+            {
+                circleAnime = false;
+            }
+        }
+    }
 
 
     /*public GameObject ToAttack(GameObject tar)
@@ -221,21 +278,29 @@ public class BasicUnits : MonoBehaviour
     {
         if (gameObject.GetComponent<SpriteRenderer>().enabled)
         {
-            if (isChosen)
+            if (team == 1)
             {
-                circle.GetComponent<SpriteRenderer>().enabled = true;
+                circleRed.GetComponent<SpriteRenderer>().enabled = false;
+                if (isChosen)
+                {
+                    circle.GetComponent<SpriteRenderer>().enabled = true;
+                }
+                else if (!circleAnime)
+                {
+                    circle.GetComponent<SpriteRenderer>().enabled = false;
+                }
             }
             else
             {
                 circle.GetComponent<SpriteRenderer>().enabled = false;
-            }
-            if (enemyChosen)
-            {
-                circleRed.GetComponent<SpriteRenderer>().enabled = true;
-            }
-            else
-            {
-                circleRed.GetComponent<SpriteRenderer>().enabled = false;
+                if (enemyChosen)
+                {
+                    circleRed.GetComponent<SpriteRenderer>().enabled = true;
+                }
+                else if (!circleAnime)
+                {
+                    circleRed.GetComponent<SpriteRenderer>().enabled = false;
+                }
             }
         }
         else
@@ -967,6 +1032,13 @@ public class BasicUnits : MonoBehaviour
 
     public virtual void RClick()
     {
+        /*if (Input.GetMouseButtonDown(1) && player.isModeAtk && !player.ishold)
+        {
+            player.isModeAtk = false;
+            player.isOrign = true;
+            player.orignalMouse.GetComponent<SpriteRenderer>().enabled = true;
+            player.targetMouse.GetComponent<SpriteRenderer>().enabled = false;
+        }*/
         if (Input.GetMouseButtonDown(1) && player.isOrign && !player.ishold)
         {
             Vector2 tarPointk = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -1005,10 +1077,15 @@ public class BasicUnits : MonoBehaviour
                 }
                 else if (tar.GetComponent<BasicUnits>().team != team)
                 {
-                    AddTar(tar.gameObject);
+                    if (tar.GetComponent<SpriteRenderer>().enabled)
+                    {
+                        tar.GetComponent<BasicUnits>().circleAnime = true;
+                        AddTar(tar.gameObject);
+                    }
                 }
                 else
                 {
+                    tar.GetComponent<BasicUnits>().circleAnime = true;
                     state = 3; // follow my units
                     follow = tar.gameObject;
                     CancelTar();
@@ -1018,22 +1095,18 @@ public class BasicUnits : MonoBehaviour
                 }
             }
         }
-        if (Input.GetMouseButtonDown(1) && player.isModeAtk)
-        {
-            player.isModeAtk = false;
-            player.isOrign = true;
-        }
+        
     }
 
-    public virtual void Update()
+    public virtual void FixedUpdate()
     {
         BarChange();
         killed();
         CheckCollision();
         SeekDirct();
         GiveAtkPoint();
+        CircleAnime();
         Circle();
-        
         /*IsSeen();*/
         Layer();
         See();

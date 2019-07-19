@@ -57,8 +57,11 @@ public class Console : MonoBehaviour
             }
             else
             {
-                orignalMouse.GetComponent<Renderer>().material.color = new Color(1, 0, 0, 1);
-                targetMouse.GetComponent<Renderer>().material.color = new Color(1, 0, 0, 1);
+                if (units[0].GetComponent<SpriteRenderer>().enabled)
+                {
+                    orignalMouse.GetComponent<Renderer>().material.color = new Color(1, 0, 0, 1);
+                    targetMouse.GetComponent<Renderer>().material.color = new Color(1, 0, 0, 1);
+                }
 
             }
         }
@@ -233,6 +236,13 @@ public class Console : MonoBehaviour
             isModeAtk = true;
             isOrign = false;
         }
+       /* if (Input.GetMouseButtonDown(1) && isModeAtk)
+        {
+            isModeAtk = false;
+            isOrign = true;
+            orignalMouse.GetComponent<SpriteRenderer>().enabled = true;
+            targetMouse.GetComponent<SpriteRenderer>().enabled = false;
+        }*/
     }
     public virtual void LClick()
     {
@@ -252,8 +262,9 @@ public class Console : MonoBehaviour
                     {
                         unit.GetComponent<BasicUnits>().state = 0;
                     }
-                    else
+                    else if (click[0].GetComponent<SpriteRenderer>().enabled)
                     {
+                        click[0].GetComponent<BasicUnits>().circleAnime = true;
                         unit.GetComponent<BasicUnits>().AddTar(click[0].gameObject);
                     }
                 }
@@ -289,7 +300,7 @@ public class Console : MonoBehaviour
                 orignalMouse.GetComponent<SpriteRenderer>().enabled = true;
                 targetMouse.GetComponent<SpriteRenderer>().enabled = false;
                 isModeAtk = false;
-                 isOrign = true;
+                isOrign = true;
              }
          }
      }
