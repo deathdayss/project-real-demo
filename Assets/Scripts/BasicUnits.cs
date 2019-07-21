@@ -558,7 +558,6 @@ public class BasicUnits : MonoBehaviour
         {
             if (attacker.Count >= 2)
             {
-                Debug.Log(attacker.Count);
                 attacker.Sort(CompareDis);
             }
             foreach(GameObject unit in attacker)
@@ -1061,6 +1060,7 @@ public class BasicUnits : MonoBehaviour
                     tarPointAnime.GetComponent<ToMoveAnime>().isPlay = true;
                 }
                 TarPoint(tarPointk);
+                Debug.Log("Move");
                 state = 1; // receive ToMove order;
                 CancelTar();
                 CancelArea();
@@ -1117,12 +1117,6 @@ public class BasicUnits : MonoBehaviour
         Layer();
         See();
         DeleteSeen();
-        if (isChosen)
-        {
-            /*LClick();*/
-            RClick();
-            PresS();
-        }
         /*ModeAtk();*/
         tarPosition();
         checkenemies();
@@ -1133,5 +1127,13 @@ public class BasicUnits : MonoBehaviour
         }
         CanAttack();
         Attacking();
+    }
+    public virtual void Update()
+    {
+        if (isChosen)
+        {
+            RClick();
+            PresS();
+        }
     }
 }

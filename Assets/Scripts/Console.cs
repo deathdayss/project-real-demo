@@ -46,25 +46,25 @@ public class Console : MonoBehaviour
         orignalMouse.GetComponent<SpriteRenderer>().enabled = true;
         targetMouse.GetComponent<SpriteRenderer>().enabled = false;
     }
-    void ArmyMode()
+    
+    void ChangeChosen(List<GameObject> team)
     {
-        if (Input.GetKey(KeyCode.LeftControl) && chosen.Count != 0)
+        foreach (GameObject unit in chosen)
         {
-            armyMode = true;
+            unit.GetComponent<BasicUnits>().isChosen = false;
         }
-        else
+        foreach (GameObject unit in team)
         {
-            armyMode = false;
+            unit.GetComponent<BasicUnits>().isChosen = true;
         }
     }
 
     void GetArmy()
     {
-        if (armyMode)
+        if (Input.GetKey(KeyCode.LeftControl) && chosen.Count != 0)
         {
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
-                Debug.Log("sad");
                 team1 = chosen;
             }
             else if (Input.GetKeyDown(KeyCode.Alpha2))
@@ -86,22 +86,27 @@ public class Console : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.Alpha1) && team1.Count != 0)
         {
+            ChangeChosen(team1);
             chosen = team1;
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2) && team2.Count != 0)
         {
+            ChangeChosen(team2);
             chosen = team2;
         }
         else if (Input.GetKeyDown(KeyCode.Alpha3) && team3.Count != 0)
         {
+            ChangeChosen(team3);
             chosen = team3;
         }
         else if (Input.GetKeyDown(KeyCode.Alpha4) && team4.Count != 0)
         {
+            ChangeChosen(team4);
             chosen = team4;
         }
         else if (Input.GetKeyDown(KeyCode.Alpha5) && team5.Count != 0)
         {
+            ChangeChosen(team5);
             chosen = team5;
         }
     }
@@ -379,7 +384,6 @@ public class Console : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ArmyMode();
         GetArmy();
         ColorOfMouse();
         ColorOfMouse();
