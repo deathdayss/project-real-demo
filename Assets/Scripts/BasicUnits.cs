@@ -315,8 +315,19 @@ public class BasicUnits : MonoBehaviour
     {
         if (team != 1)
         {
-            Collider2D[] round = Physics2D.OverlapCircleAll(transform.position, sight);
-            if (round.Length != 0)
+            Collider2D[] round1 = Physics2D.OverlapCircleAll(transform.position, sight);
+            List<Collider2D> round = new List<Collider2D>();
+            if (round1.Length != 0)
+            {
+                foreach (Collider2D unit in round1)
+                {
+                    if (unit.isTrigger)
+                    {
+                        round.Add(unit);
+                    }
+                }
+            }
+            if (round.Count != 0)
             {
                 foreach (Collider2D sth in round)
                 {
@@ -354,8 +365,19 @@ public class BasicUnits : MonoBehaviour
     {
         if (team == 1)
         {
-            Collider2D[] round = Physics2D.OverlapCircleAll(transform.position, sight);
-            if (round.Length != 0)
+            Collider2D[] round1 = Physics2D.OverlapCircleAll(transform.position, sight);
+            List<Collider2D> round = new List<Collider2D>();
+            if (round1.Length != 0)
+            {
+                foreach (Collider2D unit in round1)
+                {
+                    if (unit.isTrigger)
+                    {
+                        round.Add(unit);
+                    }
+                }
+            }
+            if (round.Count != 0)
             {
                 foreach (Collider2D sth in round)
                 {
@@ -806,8 +828,19 @@ public class BasicUnits : MonoBehaviour
 
             ArrayList enemieslist = new ArrayList();
             ArrayList dis = new ArrayList();
-            Collider2D[] enemies = Physics2D.OverlapCircleAll(transform.position, 4f);
-            if (enemies.Length > 0)
+            Collider2D[] enemiess = Physics2D.OverlapCircleAll(transform.position, 4f);
+            List<Collider2D> enemies = new List<Collider2D>();
+            if (enemiess.Length != 0)
+            {
+                foreach (Collider2D unit in enemiess)
+                {
+                    if (unit.isTrigger)
+                    {
+                        enemies.Add(unit);
+                    }
+                }
+            }
+            if (enemies.Count > 0)
             {
                 foreach (Collider2D unit in enemies)
                 {
@@ -1060,7 +1093,6 @@ public class BasicUnits : MonoBehaviour
                     tarPointAnime.GetComponent<ToMoveAnime>().isPlay = true;
                 }
                 TarPoint(tarPointk);
-                Debug.Log("Move");
                 state = 1; // receive ToMove order;
                 CancelTar();
                 CancelArea();
@@ -1086,7 +1118,10 @@ public class BasicUnits : MonoBehaviour
                     {
                         tar.GetComponent<BasicUnits>().circleAnime = true;
                         CancelArea();
-                        AddTar(tar.gameObject);
+                        if (tarEnemy != tar.gameObject)
+                        {
+                            AddTar(tar.gameObject);
+                        }
                     }
                 }
                 else
@@ -1104,7 +1139,7 @@ public class BasicUnits : MonoBehaviour
         
     }
 
-    public virtual void FixedUpdate()
+    public virtual void Update()
     {
         BarChange();
         killed();
@@ -1123,13 +1158,10 @@ public class BasicUnits : MonoBehaviour
         SeekEnemy();
         if (temCollision == null)
         {
-           State();
+            State();
         }
         CanAttack();
         Attacking();
-    }
-    public virtual void Update()
-    {
         if (isChosen)
         {
             RClick();

@@ -231,7 +231,18 @@ public class Console : MonoBehaviour
                 lineDown.GetComponent<SpriteRenderer>().enabled = false;
                 lineUp.GetComponent<SpriteRenderer>().enabled = false;
                 ishold = false;
-                Collider2D[] myunits = Physics2D.OverlapAreaAll(box1, mouse);
+                Collider2D[] myunitss = Physics2D.OverlapAreaAll(box1, mouse);
+                List<Collider2D> myunits = new List<Collider2D>();
+                if (myunitss != null)
+                {
+                    foreach (Collider2D unit in myunitss)
+                    {
+                        if (unit.isTrigger)
+                        {
+                            myunits.Add(unit);
+                        }
+                    }
+                }
                 List<GameObject> boxChoice = new List<GameObject>();
                 List<GameObject> enemyBox = new List<GameObject>();
                 if (myunits != null)
@@ -334,7 +345,10 @@ public class Console : MonoBehaviour
                     {
                         unit.GetComponent<BasicUnits>().CancelArea();
                         click[0].GetComponent<BasicUnits>().circleAnime = true;
-                        unit.GetComponent<BasicUnits>().AddTar(click[0].gameObject);
+                        if (unit.GetComponent<BasicUnits>().tarEnemy != click[0].gameObject)
+                        {
+                            unit.GetComponent<BasicUnits>().AddTar(click[0].gameObject);
+                        }
                     }
                 }
                 else
