@@ -18,19 +18,19 @@ public class skilledUnits : BasicUnits
         {
             if (skill1 != null && skill1.currentCD >= skill1.maxCD &&  Input.GetKeyDown("q"))
             {
-                skill1.GetComponent<GeneralSkills>().launch();
+                skill1.launch();
             }
-            if (skill2 != null && skill2.currentCD >= skill2.maxCD && Input.GetKeyDown("w"))
+            else if (skill2 != null && skill2.currentCD >= skill2.maxCD && Input.GetKeyDown("w"))
             {
-                skill2.GetComponent<GeneralSkills>().launch();
+                skill2.launch();
             }
-            if (skill3 != null && skill3.currentCD >= skill3.maxCD && Input.GetKeyDown("e"))
+            else if (skill3 != null && skill3.currentCD >= skill3.maxCD && Input.GetKeyDown("e"))
             {
-                skill3.GetComponent<GeneralSkills>().launch();
+                skill3.launch();
             }
-            if (skill4 != null && skill4.currentCD >= skill4.maxCD && Input.GetKeyDown("r"))
+            else if (skill4 != null && skill4.currentCD >= skill4.maxCD && Input.GetKeyDown("r"))
             {
-                skill4.GetComponent<GeneralSkills>().launch();
+                skill4.launch();
             }
         }
     }

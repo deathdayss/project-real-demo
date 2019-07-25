@@ -27,14 +27,14 @@ public class 冲击剑 : GeneralSkills
         base.Update();
         if (isAiming)
         {
-            if (Input.GetKeyDown("1"))
+            if (Input.GetMouseButtonDown(1))
             {
                 isAiming = false;
                 player.orignalMouse.GetComponent<SpriteRenderer>().enabled = true;
                 player.targetMouse.GetComponent<SpriteRenderer>().enabled = false;
                 player.isOrign = true;
             }
-            if (Input.GetKeyDown("0"))
+            if (Input.GetMouseButtonDown(0))
             {
                 tarPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 owner.GetComponent<BasicUnits>().state = indicate;
@@ -57,11 +57,21 @@ public class 冲击剑 : GeneralSkills
             }
             if (Vector2.Distance(owner.transform.position, tarPoint) <= radius)
             {
-                Collider2D[] Object = Physics2D.OverlapAreaAll(new Vector2(owner.transform.position.x, owner.transform.position.y + radius2)) // The Area connot be rotated
-                owner.transform.position = tarPoint;
+                RaycastHit2D[] Object = Physics2D.CircleCastAll(owner.transform.position, radius2, tarPoint - (Vector2)owner.transform.position, Vector2.Distance(owner.transform.position, tarPoint));
+                foreach (RaycastHit2D unit in Object)
+                {
+                    if (unit.collider.isTrigger && unit.collider.GetComponent<BasicUnits>() != null)
+                    {
+                        if (unit.collider.GetComponent<BasicUnits>().team != owner.GetComponent<BasicUnits>().team)
+                        {
+                            unit.collider.GetComponent<BasicUnits>().HP -= damage;
+                        }
+                    }
+                }
                 isMoving = false;
                 owner.GetComponent<BasicUnits>().state = 0;
-
+                owner.transform.position = tarPoint;
+                currentCD = 0;
             }
         }
     }
