@@ -5,10 +5,11 @@ using UnityEditor;
 
 public class BasicUnits : MonoBehaviour
 {
-    public int HP;
-    public int maxHp;
-    public int phAtk;
-    public int mgAtk;
+    public string name;
+    public float HP;
+    public float maxHp;
+    public float phAtk;
+    public float mgAtk;
     public float phDef;
     public float mgDef;
     public float movSpd;
@@ -27,6 +28,7 @@ public class BasicUnits : MonoBehaviour
     public int indexOfChos;
     public int team = 1;
     public int state = 0; // initial state is stop
+    public float atk;
     public bool atkMode = true;
     public bool isChosen = false;
     public Console player;
@@ -45,8 +47,9 @@ public class BasicUnits : MonoBehaviour
     public bool isSeeking = false;
     public bool isClosed = false;
     public bool enemyChosen = false;
-    public int atk;
+    public bool isFirst;
     public GameObject follow;
+    public GameObject copy;
     public GameObject tarEnemyHelper = null;
     public GameObject areaEnemy = null;
     public Vector2 tarPoint;
@@ -167,7 +170,7 @@ public class BasicUnits : MonoBehaviour
             HpBar.GetComponent<SpriteRenderer>().enabled = true;
             HpBar1.GetComponent<SpriteRenderer>().enabled = true;
             HpBar2.GetComponent<SpriteRenderer>().enabled = true;
-            float m = (float)HP / (float)maxHp;
+            float m = HP / maxHp;
             float r = 2 * (1 - m);
             float g = 1;
             if (r >= 1)

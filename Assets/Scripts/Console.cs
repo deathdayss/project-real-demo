@@ -19,6 +19,24 @@ public class Console : MonoBehaviour
     public GameObject lineUp;
     public GameObject orignalMouse;
     public GameObject targetMouse;
+    public GameObject ico;
+    public GameObject HPtext;
+    public GameObject 物攻;
+    public GameObject 魔攻;
+    public GameObject 物防;
+    public GameObject 魔防;
+    public GameObject 名字;
+    public GameObject 等级;
+    public GameObject 经验;
+    public GameObject 技能1;
+    public GameObject 技能2;
+    public GameObject 技能3;
+    public GameObject 技能4;
+    public GameObject 物品1;
+    public GameObject 物品2;
+    public GameObject 物品3;
+    public GameObject 物品4;
+    public GameObject 物品5;
     public List<GameObject> myUnits = new List<GameObject>();
     public List<GameObject> chosen = new List<GameObject>();
     public Vector2 mouse;
@@ -45,6 +63,65 @@ public class Console : MonoBehaviour
         Cursor.visible = true;
         orignalMouse.GetComponent<SpriteRenderer>().enabled = true;
         targetMouse.GetComponent<SpriteRenderer>().enabled = false;
+    }
+
+    void ChosenOne()
+    {
+        if (chosen.Count != 0)
+        {
+            ico.GetComponent<Image>().enabled = true;
+            HPtext.GetComponent<Text>().enabled = true;
+            物攻.GetComponent<Text>().enabled = true;
+            魔攻.GetComponent<Text>().enabled = true;
+            物防.GetComponent<Text>().enabled = true;
+            魔防.GetComponent<Text>().enabled = true;
+            名字.GetComponent<Text>().enabled = true;
+            ico.GetComponent<Image>().sprite = chosen[0].GetComponent<SpriteRenderer>().sprite;
+            HPtext.GetComponent<Text>().text = chosen[0].GetComponent<BasicUnits>().HP.ToString("0") + "/" + chosen[0].GetComponent<BasicUnits>().maxHp.ToString("0");
+            物攻.GetComponent<Text>().text = "物攻：" + chosen[0].GetComponent<BasicUnits>().phAtk.ToString("0");
+            魔攻.GetComponent<Text>().text = "魔攻：" + chosen[0].GetComponent<BasicUnits>().mgAtk.ToString("0");
+            物防.GetComponent<Text>().text = "物防：" + chosen[0].GetComponent<BasicUnits>().phDef.ToString("0");
+            魔防.GetComponent<Text>().text = "魔防：" + chosen[0].GetComponent<BasicUnits>().mgDef.ToString("0");
+            名字.GetComponent<Text>().text = chosen[0].GetComponent<BasicUnits>().name;
+        }
+        else if (enemyChoice != null)
+        {
+            ico.GetComponent<Image>().enabled = true;
+            HPtext.GetComponent<Text>().enabled = true;
+            物攻.GetComponent<Text>().enabled = true;
+            魔攻.GetComponent<Text>().enabled = true;
+            物防.GetComponent<Text>().enabled = true;
+            魔防.GetComponent<Text>().enabled = true;
+            名字.GetComponent<Text>().enabled = true;
+            ico.GetComponent<Image>().sprite = enemyChoice.GetComponent<SpriteRenderer>().sprite;
+            HPtext.GetComponent<Text>().text = enemyChoice.GetComponent<BasicUnits>().HP.ToString() + "/" + enemyChoice.GetComponent<BasicUnits>().maxHp.ToString("0");
+            物攻.GetComponent<Text>().text = "物攻：" + enemyChoice.GetComponent<BasicUnits>().phAtk.ToString("0");
+            魔攻.GetComponent<Text>().text = "魔攻：" + enemyChoice.GetComponent<BasicUnits>().mgAtk.ToString("0");
+            物防.GetComponent<Text>().text = "物防：" + enemyChoice.GetComponent<BasicUnits>().phDef.ToString("0");
+            魔防.GetComponent<Text>().text = "魔防：" + enemyChoice.GetComponent<BasicUnits>().mgDef.ToString("0");
+            名字.GetComponent<Text>().text = enemyChoice.GetComponent<BasicUnits>().name;
+        }
+        else
+        {
+            ico.GetComponent<Image>().enabled = false;
+            HPtext.GetComponent<Text>().enabled = false;
+            物攻.GetComponent<Text>().enabled = false;
+            魔攻.GetComponent<Text>().enabled = false;
+            物防.GetComponent<Text>().enabled = false;
+            魔防.GetComponent<Text>().enabled = false;
+            等级.GetComponent<Text>().enabled = false;
+            经验.GetComponent<Text>().enabled = false;
+            技能1.GetComponent<Text>().enabled = false;
+            技能2.GetComponent<Text>().enabled = false;
+            技能3.GetComponent<Text>().enabled = false;
+            技能4.GetComponent<Text>().enabled = false;
+            物品1.GetComponent<Text>().enabled = false;
+            物品2.GetComponent<Text>().enabled = false;
+            物品3.GetComponent<Text>().enabled = false;
+            物品4.GetComponent<Text>().enabled = false;
+            物品5.GetComponent<Text>().enabled = false;
+            名字.GetComponent<Text>().enabled = false;
+        }
     }
     
     void ChangeChosen(List<GameObject> team)
@@ -259,8 +336,14 @@ public class Console : MonoBehaviour
                         {
                             if (mine1.team == 1)
                             {
-                                mine1.isChosen = true;
-                                boxChoice.Add(unit.gameObject);
+                                if (mine1.GetComponent<Hero>() != null)
+                                {
+                                    boxChoice.Insert(0, unit.gameObject);
+                                }
+                                else
+                                {
+                                    boxChoice.Add(unit.gameObject);
+                                }
                             }
                             else
                             {
@@ -272,13 +355,16 @@ public class Console : MonoBehaviour
                     {
                         if (chosen.Count != 0)
                         {
+                            chosen[0].GetComponent<BasicUnits>().isFirst = false;
                             foreach (GameObject a in chosen)
                             {
-                                if (!boxChoice.Contains(a) && a != null)
-                                {
-                                    a.GetComponent<BasicUnits>().isChosen = false;
-                                }
+                                a.GetComponent<BasicUnits>().isChosen = false;
                             }
+                        }
+                        boxChoice[0].GetComponent<BasicUnits>().isFirst = true;
+                        foreach (GameObject unit in boxChoice)
+                        {
+                            unit.GetComponent<BasicUnits>().isChosen = true;
                         }
                         chosen = boxChoice;
                         enemyChoice = null;
@@ -398,8 +484,8 @@ public class Console : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        ChosenOne();
         GetArmy();
-        ColorOfMouse();
         ColorOfMouse();
         CursorAdjust();
         ExeModeAtk();

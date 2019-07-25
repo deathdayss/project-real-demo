@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-public class Viking_Warrior : BasicUnits
+public class Viking_Warrior : skilledUnits
 {
 
 
