@@ -23,10 +23,14 @@ public class 战争践踏 : GeneralSkills
                 if (it.team != 1)
                 {
                     it.HP -= damage;
+                    if (it.HP <= 0)
+                    {
+                        it.killer = owner;
+                    }
                 }
             }
 
         }
-        currentCD = 0;
+        currentCD = maxCD;
     }
 }

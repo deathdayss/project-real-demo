@@ -8,6 +8,8 @@ public class GeneralSkills : MonoBehaviour
     public int skillPoint;
     public float maxCD;
     public float currentCD;
+    public string name;
+    public bool isLearned;
     
     // Start is called before the first frame update
     public void Start()
@@ -16,9 +18,9 @@ public class GeneralSkills : MonoBehaviour
     }
     public virtual void AddCD()
     {
-        if (currentCD < maxCD)
+        if (currentCD > 0)
         {
-            currentCD += Time.deltaTime;
+            currentCD -= Time.deltaTime;
         }
     }
     public virtual void launch()

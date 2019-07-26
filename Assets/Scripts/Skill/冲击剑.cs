@@ -62,16 +62,21 @@ public class 冲击剑 : GeneralSkills
                 {
                     if (unit.collider.isTrigger && unit.collider.GetComponent<BasicUnits>() != null)
                     {
-                        if (unit.collider.GetComponent<BasicUnits>().team != owner.GetComponent<BasicUnits>().team)
+                        BasicUnits it = unit.collider.GetComponent<BasicUnits>();
+                        if (it.team != owner.GetComponent<BasicUnits>().team)
                         {
-                            unit.collider.GetComponent<BasicUnits>().HP -= damage;
+                            it.HP -= damage;
+                            if (it.HP <= 0)
+                            {
+                                it.killer = owner;
+                            }
                         }
                     }
                 }
                 isMoving = false;
                 owner.GetComponent<BasicUnits>().state = 0;
                 owner.transform.position = tarPoint;
-                currentCD = 0;
+                currentCD = maxCD;
             }
         }
     }

@@ -16,19 +16,19 @@ public class skilledUnits : BasicUnits
         base.Update();
         if (isFirst && player.isOrign)
         {
-            if (skill1 != null && skill1.currentCD >= skill1.maxCD &&  Input.GetKeyDown("q"))
+            if (skill1 != null && skill1.currentCD <= 0 &&  Input.GetKeyDown("q"))
             {
                 skill1.launch();
             }
-            else if (skill2 != null && skill2.currentCD >= skill2.maxCD && Input.GetKeyDown("w"))
+            else if (skill2 != null && skill2.currentCD <= 0 && Input.GetKeyDown("w"))
             {
                 skill2.launch();
             }
-            else if (skill3 != null && skill3.currentCD >= skill3.maxCD && Input.GetKeyDown("e"))
+            else if (skill3 != null && skill3.currentCD <= 0 && Input.GetKeyDown("e"))
             {
                 skill3.launch();
             }
-            else if (skill4 != null && skill4.currentCD >= skill4.maxCD && Input.GetKeyDown("r"))
+            else if (skill4 != null && skill4.currentCD <= 0 && Input.GetKeyDown("r"))
             {
                 skill4.launch();
             }

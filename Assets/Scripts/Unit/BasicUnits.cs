@@ -18,7 +18,6 @@ public class BasicUnits : MonoBehaviour
     public float thrSpd;
     public float radius;
     public float Exp;
-    public float pExp;
     public float arExp;
     public float sight = 7;
     public float seek;
@@ -40,6 +39,7 @@ public class BasicUnits : MonoBehaviour
     public GameObject HpBar1;
     public GameObject HpBar2;
     public GameObject tarEnemy = null;
+    public GameObject killer;
     public float time = 0;
     public float timeHelper = 0;
     public float timeAnime = 0;
@@ -651,6 +651,32 @@ public class BasicUnits : MonoBehaviour
             player.team3.Remove(gameObject);
             player.team4.Remove(gameObject);
             player.team5.Remove(gameObject);
+            if (killer != null && killer.GetComponent<BasicUnits>().team != team)
+            {
+                
+                Collider2D[] gainer = Physics2D.OverlapCircleAll(transform.position, arExp);
+                float num = 0;
+                List<Hero> trueGainer = new List<Hero>();
+                foreach (Collider2D unit in gainer)
+                {
+                    if (unit.isTrigger && unit.GetComponent<Hero>() != null)
+                    {
+                        Hero it = unit.GetComponent<Hero>();
+                        if (it.team == killer.GetComponent<BasicUnits>().team)
+                        {
+                            trueGainer.Add(it);
+                            num++;
+                        }
+                    }
+                }
+                if (num != 0)
+                {
+                    foreach (Hero unit in trueGainer)
+                    {
+                        unit.exp += Mathf.CeilToInt(Exp / num);
+                    }
+                }
+            }
             Destroy(gameObject);
         }
     }
@@ -788,11 +814,19 @@ public class BasicUnits : MonoBehaviour
             if (isSeeking && areaEnemy != null && time - timeHelper >= atkSpd)
             {
                 areaEnemy.GetComponent<BasicUnits>().HP -= atk;
+                if (areaEnemy.GetComponent<BasicUnits>().HP <= 0)
+                {
+                    areaEnemy.GetComponent<BasicUnits>().killer = gameObject;
+                }
                 time = timeHelper;
             }
             if (state == 2 && tarEnemy != null && time - timeHelper >= atkSpd)
             {
                 tarEnemy.GetComponent<BasicUnits>().HP -= atk;
+                if (tarEnemy.GetComponent<BasicUnits>().HP <= 0)
+                {
+                    areaEnemy.GetComponent<BasicUnits>().killer = gameObject;
+                }
                 time = timeHelper;
             }
         }

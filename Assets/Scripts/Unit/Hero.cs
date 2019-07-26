@@ -11,7 +11,18 @@ public class Hero : skilledUnits
     public GameObject item5;
     public int level;
     public int exp;
-
-
-
+    public int maxExp;
+    void levelUp()
+    {
+        if (exp >= maxExp)
+        {
+            level++;
+            maxExp += 10;
+        }
+    }
+    public override void Update()
+    {
+        base.Update();
+        levelUp();
+    }
 }

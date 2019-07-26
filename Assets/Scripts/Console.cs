@@ -83,6 +83,67 @@ public class Console : MonoBehaviour
             物防.GetComponent<Text>().text = "物防：" + chosen[0].GetComponent<BasicUnits>().phDef.ToString("0");
             魔防.GetComponent<Text>().text = "魔防：" + chosen[0].GetComponent<BasicUnits>().mgDef.ToString("0");
             名字.GetComponent<Text>().text = chosen[0].GetComponent<BasicUnits>().name;
+            if (chosen[0].GetComponent<skilledUnits>() != null)
+            {
+
+                skilledUnits it = chosen[0].GetComponent<skilledUnits>();
+                if (it.skill1.isLearned)
+                {
+                    if (it.skill1.currentCD > 0)
+                    {
+                        技能1.GetComponent<Text>().text = it.skill1.name + " " + Mathf.Ceil(it.skill1.currentCD).ToString();
+                    }
+                    else
+                    {
+                        技能1.GetComponent<Text>().text = it.skill1.name;
+                    }
+                    技能1.GetComponent<Text>().enabled = true;
+                }
+                if (it.skill2 != null && it.skill2.isLearned)
+                {
+                    if (it.skill2.currentCD > 0)
+                    {
+                        技能2.GetComponent<Text>().text = it.skill2.name + " " + Mathf.Ceil(it.skill2.currentCD).ToString();
+                    }
+                    else
+                    {
+                        技能2.GetComponent<Text>().text = it.skill2.name;
+                    }
+                    技能2.GetComponent<Text>().enabled = true;
+                }
+                if (it.skill3 != null && it.skill3.isLearned)
+                {
+                    if (it.skill3.currentCD > 0)
+                    {
+                        技能3.GetComponent<Text>().text = it.skill3.name + " " + Mathf.Ceil(it.skill3.currentCD).ToString();
+                    }
+                    else
+                    {
+                        技能3.GetComponent<Text>().text = it.skill3.name;
+                    }
+                    技能3.GetComponent<Text>().enabled = true;
+                }
+                if (it.skill4 != null && it.skill4.isLearned)
+                {
+                    if (it.skill4.currentCD > 0)
+                    {
+                        技能3.GetComponent<Text>().text = it.skill1.name + " " + Mathf.Ceil(it.skill4.currentCD).ToString();
+                    }
+                    else
+                    {
+                        技能3.GetComponent<Text>().text = it.skill1.name;
+                    }
+                    技能4.GetComponent<Text>().enabled = true;
+                }
+            }
+            if (chosen[0].GetComponent<Hero>() != null)
+            {
+                Hero it = chosen[0].GetComponent<Hero>();
+                等级.GetComponent<Text>().text = "等级：" + it.level.ToString();
+                等级.GetComponent<Text>().enabled = true;
+                经验.GetComponent<Text>().text = "经验：" + it.exp.ToString() + "/" + it.maxExp.ToString();
+                经验.GetComponent<Text>().enabled = true;
+            }
         }
         else if (enemyChoice != null)
         {
@@ -100,6 +161,64 @@ public class Console : MonoBehaviour
             物防.GetComponent<Text>().text = "物防：" + enemyChoice.GetComponent<BasicUnits>().phDef.ToString("0");
             魔防.GetComponent<Text>().text = "魔防：" + enemyChoice.GetComponent<BasicUnits>().mgDef.ToString("0");
             名字.GetComponent<Text>().text = enemyChoice.GetComponent<BasicUnits>().name;
+            if (enemyChoice.GetComponent<skilledUnits>() != null)
+            {
+                skilledUnits it = enemyChoice.GetComponent<skilledUnits>();
+                if (it.skill1.isLearned)
+                {
+                    if (it.skill1.currentCD > 0)
+                    {
+                        技能1.GetComponent<Text>().text = it.skill1.name + " " + Mathf.Ceil(it.skill1.currentCD).ToString();
+                    }
+                    else
+                    {
+                        技能1.GetComponent<Text>().text = it.skill1.name;
+                    }
+                    技能1.GetComponent<Text>().enabled = true;
+                }
+                if (it.skill2 != null && it.skill2.isLearned)
+                {
+                    if (it.skill2.currentCD > 0)
+                    {
+                        技能2.GetComponent<Text>().text = it.skill2.name + " " + Mathf.Ceil(it.skill2.currentCD).ToString();
+                    }
+                    else
+                    {
+                        技能2.GetComponent<Text>().text = it.skill2.name;
+                    }
+                    技能2.GetComponent<Text>().enabled = true;
+                }
+                if (it.skill3 != null && it.skill3.isLearned)
+                {
+                    if (it.skill3.currentCD > 0)
+                    {
+                        技能3.GetComponent<Text>().text = it.skill3.name + " " + Mathf.Ceil(it.skill3.currentCD).ToString();
+                    }
+                    else
+                    {
+                        技能3.GetComponent<Text>().text = it.skill3.name;
+                    }
+                    技能3.GetComponent<Text>().enabled = true;
+                }
+                if (it.skill4 != null && it.skill4.isLearned)
+                {
+                    if (it.skill4.currentCD > 0)
+                    {
+                        技能3.GetComponent<Text>().text = it.skill1.name + " " + Mathf.Ceil(it.skill4.currentCD).ToString();
+                    }
+                    else
+                    {
+                        技能3.GetComponent<Text>().text = it.skill1.name;
+                    }
+                    技能4.GetComponent<Text>().enabled = true;
+                }
+            }
+            if (enemyChoice.GetComponent<Hero>() != null)
+            {
+                Hero it = enemyChoice.GetComponent<Hero>();
+                等级.GetComponent<Text>().text = "等级：" + it.level.ToString();
+                等级.GetComponent<Text>().enabled = true;
+            }
         }
         else
         {
