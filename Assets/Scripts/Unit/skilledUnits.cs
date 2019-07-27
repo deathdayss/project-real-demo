@@ -16,6 +16,7 @@ public class skilledUnits : BasicUnits
         base.Update();
         if (isFirst && player.isOrign)
         {
+            
             if (skill1 != null && skill1.currentCD <= 0 &&  Input.GetKeyDown("q"))
             {
                 skill1.launch();

@@ -32,16 +32,14 @@ public class Console : MonoBehaviour
     public GameObject 技能2;
     public GameObject 技能3;
     public GameObject 技能4;
-    public GameObject 物品1;
-    public GameObject 物品2;
-    public GameObject 物品3;
-    public GameObject 物品4;
-    public GameObject 物品5;
+    
     public List<GameObject> myUnits = new List<GameObject>();
     public List<GameObject> chosen = new List<GameObject>();
     public Vector2 mouse;
     public GameObject fallin;
     public GameObject atkPoint;
+    public GameObject tarPoint;
+    public List<GameObject> 物品 = new List<GameObject>();
     public List<GameObject> team1 = new List<GameObject>();
     public List<GameObject> team2 = new List<GameObject>();
     public List<GameObject> team3 = new List<GameObject>();
@@ -82,6 +80,14 @@ public class Console : MonoBehaviour
             魔攻.GetComponent<Text>().text = "魔攻：" + chosen[0].GetComponent<BasicUnits>().mgAtk.ToString("0");
             物防.GetComponent<Text>().text = "物防：" + chosen[0].GetComponent<BasicUnits>().phDef.ToString("0");
             魔防.GetComponent<Text>().text = "魔防：" + chosen[0].GetComponent<BasicUnits>().mgDef.ToString("0");
+            if (chosen[0].GetComponent<BasicUnits>().atkMode)
+            {
+                物攻.GetComponent<Text>().text = "主物攻：" + chosen[0].GetComponent<BasicUnits>().phAtk.ToString("0");
+            }
+            else
+            {
+                魔攻.GetComponent<Text>().text = "主魔攻：" + chosen[0].GetComponent<BasicUnits>().mgAtk.ToString("0");
+            }
             名字.GetComponent<Text>().text = chosen[0].GetComponent<BasicUnits>().name;
             if (chosen[0].GetComponent<skilledUnits>() != null)
             {
@@ -111,6 +117,10 @@ public class Console : MonoBehaviour
                     }
                     技能2.GetComponent<Text>().enabled = true;
                 }
+                else
+                {
+                    技能2.GetComponent<Text>().enabled = false;
+                }
                 if (it.skill3 != null && it.skill3.isLearned)
                 {
                     if (it.skill3.currentCD > 0)
@@ -122,6 +132,10 @@ public class Console : MonoBehaviour
                         技能3.GetComponent<Text>().text = it.skill3.name;
                     }
                     技能3.GetComponent<Text>().enabled = true;
+                }
+                else
+                {
+                    技能3.GetComponent<Text>().enabled = false;
                 }
                 if (it.skill4 != null && it.skill4.isLearned)
                 {
@@ -135,6 +149,10 @@ public class Console : MonoBehaviour
                     }
                     技能4.GetComponent<Text>().enabled = true;
                 }
+                else
+                {
+                    技能4.GetComponent<Text>().enabled = false;
+                }
             }
             if (chosen[0].GetComponent<Hero>() != null)
             {
@@ -143,6 +161,47 @@ public class Console : MonoBehaviour
                 等级.GetComponent<Text>().enabled = true;
                 经验.GetComponent<Text>().text = "经验：" + it.exp.ToString() + "/" + it.maxExp.ToString();
                 经验.GetComponent<Text>().enabled = true;
+                int all = it.Item.Count;
+                if (all != 0)
+                {
+                    for (int jk = 0; jk < all; jk++)
+                    {
+                        物品[jk].GetComponent<Text>().enabled = true;
+                        if (it.Item[jk].consumable)
+                        {
+                            物品[jk].GetComponent<Text>().text = it.Item[jk].name + "×" + it.Item[jk].num.ToString();
+                        }
+                        else
+                        {
+                            物品[jk].GetComponent<Text>().text = it.Item[jk].name;
+                        }
+                    }
+                    if (all < 5)
+                    {
+                        for (int jk2 = all; jk2 < 5; jk2++)
+                        {
+                            物品[jk2].GetComponent<Text>().enabled = false;
+                        }
+                    }
+                }
+                else
+                {
+                    物品[0].GetComponent<Text>().enabled = false;
+                    物品[1].GetComponent<Text>().enabled = false;
+                    物品[2].GetComponent<Text>().enabled = false;
+                    物品[3].GetComponent<Text>().enabled = false;
+                    物品[4].GetComponent<Text>().enabled = false;
+                }
+            }
+            else
+            {
+                等级.GetComponent<Text>().enabled = false;
+                经验.GetComponent<Text>().enabled = false;
+                物品[0].GetComponent<Text>().enabled = false;
+                物品[1].GetComponent<Text>().enabled = false;
+                物品[2].GetComponent<Text>().enabled = false;
+                物品[3].GetComponent<Text>().enabled = false;
+                物品[4].GetComponent<Text>().enabled = false;
             }
         }
         else if (enemyChoice != null)
@@ -158,67 +217,32 @@ public class Console : MonoBehaviour
             HPtext.GetComponent<Text>().text = enemyChoice.GetComponent<BasicUnits>().HP.ToString() + "/" + enemyChoice.GetComponent<BasicUnits>().maxHp.ToString("0");
             物攻.GetComponent<Text>().text = "物攻：" + enemyChoice.GetComponent<BasicUnits>().phAtk.ToString("0");
             魔攻.GetComponent<Text>().text = "魔攻：" + enemyChoice.GetComponent<BasicUnits>().mgAtk.ToString("0");
+            if (enemyChoice.GetComponent<BasicUnits>().atkMode)
+            {
+                物攻.GetComponent<Text>().text = "主物攻：" + enemyChoice.GetComponent<BasicUnits>().phAtk.ToString("0");
+            }
+            else
+            {
+                魔攻.GetComponent<Text>().text = "主魔攻：" + enemyChoice.GetComponent<BasicUnits>().mgAtk.ToString("0");
+            }
             物防.GetComponent<Text>().text = "物防：" + enemyChoice.GetComponent<BasicUnits>().phDef.ToString("0");
             魔防.GetComponent<Text>().text = "魔防：" + enemyChoice.GetComponent<BasicUnits>().mgDef.ToString("0");
             名字.GetComponent<Text>().text = enemyChoice.GetComponent<BasicUnits>().name;
-            if (enemyChoice.GetComponent<skilledUnits>() != null)
-            {
-                skilledUnits it = enemyChoice.GetComponent<skilledUnits>();
-                if (it.skill1.isLearned)
-                {
-                    if (it.skill1.currentCD > 0)
-                    {
-                        技能1.GetComponent<Text>().text = it.skill1.name + " " + Mathf.Ceil(it.skill1.currentCD).ToString();
-                    }
-                    else
-                    {
-                        技能1.GetComponent<Text>().text = it.skill1.name;
-                    }
-                    技能1.GetComponent<Text>().enabled = true;
-                }
-                if (it.skill2 != null && it.skill2.isLearned)
-                {
-                    if (it.skill2.currentCD > 0)
-                    {
-                        技能2.GetComponent<Text>().text = it.skill2.name + " " + Mathf.Ceil(it.skill2.currentCD).ToString();
-                    }
-                    else
-                    {
-                        技能2.GetComponent<Text>().text = it.skill2.name;
-                    }
-                    技能2.GetComponent<Text>().enabled = true;
-                }
-                if (it.skill3 != null && it.skill3.isLearned)
-                {
-                    if (it.skill3.currentCD > 0)
-                    {
-                        技能3.GetComponent<Text>().text = it.skill3.name + " " + Mathf.Ceil(it.skill3.currentCD).ToString();
-                    }
-                    else
-                    {
-                        技能3.GetComponent<Text>().text = it.skill3.name;
-                    }
-                    技能3.GetComponent<Text>().enabled = true;
-                }
-                if (it.skill4 != null && it.skill4.isLearned)
-                {
-                    if (it.skill4.currentCD > 0)
-                    {
-                        技能3.GetComponent<Text>().text = it.skill1.name + " " + Mathf.Ceil(it.skill4.currentCD).ToString();
-                    }
-                    else
-                    {
-                        技能3.GetComponent<Text>().text = it.skill1.name;
-                    }
-                    技能4.GetComponent<Text>().enabled = true;
-                }
-            }
             if (enemyChoice.GetComponent<Hero>() != null)
             {
                 Hero it = enemyChoice.GetComponent<Hero>();
                 等级.GetComponent<Text>().text = "等级：" + it.level.ToString();
                 等级.GetComponent<Text>().enabled = true;
             }
+            技能1.GetComponent<Text>().enabled = false;
+            技能2.GetComponent<Text>().enabled = false;
+            技能3.GetComponent<Text>().enabled = false;
+            技能4.GetComponent<Text>().enabled = false;
+            物品[0].GetComponent<Text>().enabled = false;
+            物品[1].GetComponent<Text>().enabled = false;
+            物品[2].GetComponent<Text>().enabled = false;
+            物品[3].GetComponent<Text>().enabled = false;
+            物品[4].GetComponent<Text>().enabled = false;
         }
         else
         {
@@ -234,11 +258,11 @@ public class Console : MonoBehaviour
             技能2.GetComponent<Text>().enabled = false;
             技能3.GetComponent<Text>().enabled = false;
             技能4.GetComponent<Text>().enabled = false;
-            物品1.GetComponent<Text>().enabled = false;
-            物品2.GetComponent<Text>().enabled = false;
-            物品3.GetComponent<Text>().enabled = false;
-            物品4.GetComponent<Text>().enabled = false;
-            物品5.GetComponent<Text>().enabled = false;
+            物品[0].GetComponent<Text>().enabled = false;
+            物品[1].GetComponent<Text>().enabled = false;
+            物品[2].GetComponent<Text>().enabled = false;
+            物品[3].GetComponent<Text>().enabled = false;
+            物品[4].GetComponent<Text>().enabled = false;
             名字.GetComponent<Text>().enabled = false;
         }
     }
@@ -310,7 +334,7 @@ public class Console : MonoBehaviour
     void ColorOfMouse()
     {
         Collider2D[] units = Physics2D.OverlapCircleAll(mouse, 0.1f);
-        if (units.Length != 0)
+        if (units.Length != 0 && units[0].GetComponent<BasicUnits>() != null)
         {
             if (units[0].GetComponent<BasicUnits>().team == 1)
             {
@@ -433,7 +457,7 @@ public class Console : MonoBehaviour
                 {
                     foreach (Collider2D unit in myunitss)
                     {
-                        if (unit.isTrigger)
+                        if (unit.isTrigger && unit.GetComponent<BasicUnits>() != null)
                         {
                             myunits.Add(unit);
                         }

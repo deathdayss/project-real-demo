@@ -27,7 +27,6 @@ public class BasicUnits : MonoBehaviour
     public int indexOfChos;
     public int team = 1;
     public int state = 0; // initial state is stop
-    public float atk;
     public bool atkMode = true;
     public bool isChosen = false;
     public Console player;
@@ -79,14 +78,6 @@ public class BasicUnits : MonoBehaviour
             player.myUnits.Add(gameObject);
         }
         myBody.freezeRotation = true;
-        if (atkMode)
-        {
-            atk = phAtk;
-        }
-        else
-        {
-            atk = mgAtk;
-        }
         myBody.isKinematic = false;
         for (int i = 0; i < 8; i++)
         {
@@ -328,6 +319,10 @@ public class BasicUnits : MonoBehaviour
                     {
                         round.Add(unit);
                     }
+                    else if (unit.GetComponent<BasicUnits>() == null)
+                    {
+                        round.Add(unit);
+                    }
                 }
             }
             if (round.Count != 0)
@@ -366,6 +361,7 @@ public class BasicUnits : MonoBehaviour
 
     public virtual void See()
     {
+        
         if (team == 1)
         {
             Collider2D[] round1 = Physics2D.OverlapCircleAll(transform.position, sight);
@@ -375,6 +371,10 @@ public class BasicUnits : MonoBehaviour
                 foreach (Collider2D unit in round1)
                 {
                     if (unit.isTrigger)
+                    {
+                        round.Add(unit);
+                    }
+                    else if (unit.GetComponent<BasicUnits>() == null)
                     {
                         round.Add(unit);
                     }
@@ -404,6 +404,32 @@ public class BasicUnits : MonoBehaviour
                             {
                                 sth.GetComponent<SpriteRenderer>().enabled = true;
                             }
+                            seenThings.Add(sth.gameObject);
+                        }
+                    }
+                    else if (sth.GetComponent<GeneralItem>() != null)
+                    {
+                        if (sth.GetComponent<GeneralItem>().owner == null && !seenThings.Contains(sth.gameObject))
+                        {
+                            if (!sth.GetComponent<SpriteRenderer>().enabled)
+                            {
+                                sth.GetComponent<SpriteRenderer>().enabled = true;
+                            }
+                            seenThings.Add(sth.gameObject);
+                        }
+                        else if (sth.GetComponent<GeneralItem>().owner != null)
+                        {
+                            seenThings.Remove(sth.gameObject);
+                        }
+                    }
+                    else
+                    {
+                        if (!sth.GetComponent<SpriteRenderer>().enabled)
+                        {
+                            sth.GetComponent<SpriteRenderer>().enabled = true;
+                        }
+                        if (!seenThings.Contains(sth.gameObject))
+                        {
                             seenThings.Add(sth.gameObject);
                         }
                     }
@@ -646,6 +672,7 @@ public class BasicUnits : MonoBehaviour
                 player.enemyChoice = null;
             }
             player.chosen.Remove(gameObject);
+            player.myUnits.Remove(gameObject);
             player.team1.Remove(gameObject);
             player.team2.Remove(gameObject);
             player.team3.Remove(gameObject);
@@ -813,7 +840,14 @@ public class BasicUnits : MonoBehaviour
             time += Time.deltaTime;
             if (isSeeking && areaEnemy != null && time - timeHelper >= atkSpd)
             {
-                areaEnemy.GetComponent<BasicUnits>().HP -= atk;
+                if (atkMode)
+                {
+                    areaEnemy.GetComponent<BasicUnits>().HP -= phAtk - areaEnemy.GetComponent<BasicUnits>().phDef;
+                }
+                else
+                {
+                    areaEnemy.GetComponent<BasicUnits>().HP -= mgAtk - areaEnemy.GetComponent<BasicUnits>().phDef;
+                }
                 if (areaEnemy.GetComponent<BasicUnits>().HP <= 0)
                 {
                     areaEnemy.GetComponent<BasicUnits>().killer = gameObject;
@@ -822,10 +856,17 @@ public class BasicUnits : MonoBehaviour
             }
             if (state == 2 && tarEnemy != null && time - timeHelper >= atkSpd)
             {
-                tarEnemy.GetComponent<BasicUnits>().HP -= atk;
+                if (atkMode)
+                {
+                    tarEnemy.GetComponent<BasicUnits>().HP -= phAtk - tarEnemy.GetComponent<BasicUnits>().phDef;
+                }
+                else
+                {
+                    tarEnemy.GetComponent<BasicUnits>().HP -= mgAtk - tarEnemy.GetComponent<BasicUnits>().phDef;
+                }
                 if (tarEnemy.GetComponent<BasicUnits>().HP <= 0)
                 {
-                    areaEnemy.GetComponent<BasicUnits>().killer = gameObject;
+                    tarEnemy.GetComponent<BasicUnits>().killer = gameObject;
                 }
                 time = timeHelper;
             }
@@ -860,7 +901,7 @@ public class BasicUnits : MonoBehaviour
     public virtual void checkenemies()
     {
 
-        if (state != 1 && state != 2 && !(state == 0 && setPosition != null))
+        if ((state == 3 || state == 4 || state == 0) && !(state == 0 && setPosition != null))
         {
 
             ArrayList enemieslist = new ArrayList();

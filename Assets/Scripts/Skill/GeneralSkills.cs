@@ -9,6 +9,7 @@ public class GeneralSkills : MonoBehaviour
     public float maxCD;
     public float currentCD;
     public string name;
+    public string description;
     public bool isLearned;
     
     // Start is called before the first frame update

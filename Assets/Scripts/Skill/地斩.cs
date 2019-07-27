@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class 战争践踏 : GeneralSkills
+public class 地斩 : GeneralSkills
 {
     public float damage;
     public float radius;
-    public bool isMg;
 
 
 
@@ -17,12 +16,12 @@ public class 战争践踏 : GeneralSkills
         Collider2D[] effect = Physics2D.OverlapCircleAll(owner.transform.position, radius);
         foreach (Collider2D thing in effect)
         {
-            if (thing.isTrigger)
+            if (thing.isTrigger && thing.GetComponent<BasicUnits>() != null)
             {
                 BasicUnits it = thing.GetComponent<BasicUnits>();
                 if (it.team != 1)
                 {
-                    it.HP -= damage;
+                    it.HP -= damage - it.phDef;
                     if (it.HP <= 0)
                     {
                         it.killer = owner;
