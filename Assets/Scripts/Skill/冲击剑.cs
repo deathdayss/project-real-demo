@@ -5,6 +5,12 @@ using UnityEngine;
 public class 冲击剑 : AimSkills
 {
 
+    public new void Start()
+    {
+        name = "冲击剑";
+        description = "冲击" + radius.ToString() + "码距离，对沿途敌人造成" + damage + "点物理伤害";
+    }
+
     public override void Update()
     {
         base.Update();

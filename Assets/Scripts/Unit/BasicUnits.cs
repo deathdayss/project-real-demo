@@ -67,7 +67,7 @@ public class BasicUnits : MonoBehaviour
 
 
 
-    public void Start()
+    public virtual void Start()
     {
         if (team != 1)
         {
@@ -415,6 +415,7 @@ public class BasicUnits : MonoBehaviour
                             {
                                 sth.GetComponent<SpriteRenderer>().enabled = true;
                             }
+                            sth.GetComponent<SpriteRenderer>().color = Color.white;
                             seenThings.Add(sth.gameObject);
                         }
                         else if (sth.GetComponent<GeneralItem>().owner != null)
@@ -428,6 +429,7 @@ public class BasicUnits : MonoBehaviour
                         {
                             sth.GetComponent<SpriteRenderer>().enabled = true;
                         }
+                        sth.GetComponent<SpriteRenderer>().color = Color.white;
                         if (!seenThings.Contains(sth.gameObject))
                         {
                             seenThings.Add(sth.gameObject);
@@ -465,7 +467,14 @@ public class BasicUnits : MonoBehaviour
                     }
                     if (!k)
                     {
-                        h.GetComponent<SpriteRenderer>().enabled = false;
+                        if(h.GetComponent<BasicUnits>() != null)
+                        {
+                            h.GetComponent<SpriteRenderer>().enabled = false;
+                        }
+                        else
+                        {
+                            h.GetComponent<SpriteRenderer>().color = Color.gray;
+                        }
                     }
                 }
             }

@@ -11,8 +11,10 @@ public class Console : MonoBehaviour
     public bool isModeAtk = false;
     public bool isOrign = true;
     public bool ishold;
+    public bool isPullItem = false;
     public bool armyMode = false;
     public Transform cam;
+    public GameObject wordHolder;
     public GameObject lineLeft;
     public GameObject lineRight;
     public GameObject lineDown;
@@ -20,6 +22,7 @@ public class Console : MonoBehaviour
     public GameObject orignalMouse;
     public GameObject targetMouse;
     public GameObject ico;
+    public GeneralItem pullItem;
     public GameObject HPtext;
     public GameObject 物攻;
     public GameObject 魔攻;
@@ -28,10 +31,7 @@ public class Console : MonoBehaviour
     public GameObject 名字;
     public GameObject 等级;
     public GameObject 经验;
-    public GameObject 技能1;
-    public GameObject 技能2;
-    public GameObject 技能3;
-    public GameObject 技能4;
+    public List<GameObject> 技能;
     
     public List<GameObject> myUnits = new List<GameObject>();
     public List<GameObject> chosen = new List<GameObject>();
@@ -61,6 +61,8 @@ public class Console : MonoBehaviour
         Cursor.visible = true;
         orignalMouse.GetComponent<SpriteRenderer>().enabled = true;
         targetMouse.GetComponent<SpriteRenderer>().enabled = false;
+        wordHolder.GetComponent<Image>().enabled = false;
+        wordHolder.GetComponent<InputField>().placeholder.GetComponent<Text>().enabled = false;
     }
 
     void ChosenOne()
@@ -97,61 +99,61 @@ public class Console : MonoBehaviour
                 {
                     if (it.skill1.currentCD > 0)
                     {
-                        技能1.GetComponent<Text>().text = it.skill1.name + " " + Mathf.Ceil(it.skill1.currentCD).ToString();
+                        技能[0].GetComponent<Text>().text = it.skill1.name + " " + Mathf.Ceil(it.skill1.currentCD).ToString();
                     }
                     else
                     {
-                        技能1.GetComponent<Text>().text = it.skill1.name;
+                        技能[0].GetComponent<Text>().text = it.skill1.name;
                     }
-                    技能1.GetComponent<Text>().enabled = true;
+                    技能[0].GetComponent<Text>().enabled = true;
                 }
                 if (it.skill2 != null && it.skill2.isLearned)
                 {
                     if (it.skill2.currentCD > 0)
                     {
-                        技能2.GetComponent<Text>().text = it.skill2.name + " " + Mathf.Ceil(it.skill2.currentCD).ToString();
+                        技能[1].GetComponent<Text>().text = it.skill2.name + " " + Mathf.Ceil(it.skill2.currentCD).ToString();
                     }
                     else
                     {
-                        技能2.GetComponent<Text>().text = it.skill2.name;
+                        技能[1].GetComponent<Text>().text = it.skill2.name;
                     }
-                    技能2.GetComponent<Text>().enabled = true;
+                    技能[1].GetComponent<Text>().enabled = true;
                 }
                 else
                 {
-                    技能2.GetComponent<Text>().enabled = false;
+                    技能[1].GetComponent<Text>().enabled = false;
                 }
                 if (it.skill3 != null && it.skill3.isLearned)
                 {
                     if (it.skill3.currentCD > 0)
                     {
-                        技能3.GetComponent<Text>().text = it.skill3.name + " " + Mathf.Ceil(it.skill3.currentCD).ToString();
+                        技能[2].GetComponent<Text>().text = it.skill3.name + " " + Mathf.Ceil(it.skill3.currentCD).ToString();
                     }
                     else
                     {
-                        技能3.GetComponent<Text>().text = it.skill3.name;
+                        技能[2].GetComponent<Text>().text = it.skill3.name;
                     }
-                    技能3.GetComponent<Text>().enabled = true;
+                    技能[2].GetComponent<Text>().enabled = true;
                 }
                 else
                 {
-                    技能3.GetComponent<Text>().enabled = false;
+                    技能[3].GetComponent<Text>().enabled = false;
                 }
                 if (it.skill4 != null && it.skill4.isLearned)
                 {
                     if (it.skill4.currentCD > 0)
                     {
-                        技能3.GetComponent<Text>().text = it.skill1.name + " " + Mathf.Ceil(it.skill4.currentCD).ToString();
+                        技能[3].GetComponent<Text>().text = it.skill1.name + " " + Mathf.Ceil(it.skill4.currentCD).ToString();
                     }
                     else
                     {
-                        技能3.GetComponent<Text>().text = it.skill1.name;
+                        技能[3].GetComponent<Text>().text = it.skill1.name;
                     }
-                    技能4.GetComponent<Text>().enabled = true;
+                    技能[3].GetComponent<Text>().enabled = true;
                 }
                 else
                 {
-                    技能4.GetComponent<Text>().enabled = false;
+                    技能[3].GetComponent<Text>().enabled = false;
                 }
             }
             if (chosen[0].GetComponent<Hero>() != null)
@@ -234,10 +236,10 @@ public class Console : MonoBehaviour
                 等级.GetComponent<Text>().text = "等级：" + it.level.ToString();
                 等级.GetComponent<Text>().enabled = true;
             }
-            技能1.GetComponent<Text>().enabled = false;
-            技能2.GetComponent<Text>().enabled = false;
-            技能3.GetComponent<Text>().enabled = false;
-            技能4.GetComponent<Text>().enabled = false;
+            技能[0].GetComponent<Text>().enabled = false;
+            技能[1].GetComponent<Text>().enabled = false;
+            技能[2].GetComponent<Text>().enabled = false;
+            技能[3].GetComponent<Text>().enabled = false;
             物品[0].GetComponent<Text>().enabled = false;
             物品[1].GetComponent<Text>().enabled = false;
             物品[2].GetComponent<Text>().enabled = false;
@@ -254,10 +256,10 @@ public class Console : MonoBehaviour
             魔防.GetComponent<Text>().enabled = false;
             等级.GetComponent<Text>().enabled = false;
             经验.GetComponent<Text>().enabled = false;
-            技能1.GetComponent<Text>().enabled = false;
-            技能2.GetComponent<Text>().enabled = false;
-            技能3.GetComponent<Text>().enabled = false;
-            技能4.GetComponent<Text>().enabled = false;
+            技能[0].GetComponent<Text>().enabled = false;
+            技能[1].GetComponent<Text>().enabled = false;
+            技能[2].GetComponent<Text>().enabled = false;
+            技能[3].GetComponent<Text>().enabled = false;
             物品[0].GetComponent<Text>().enabled = false;
             物品[1].GetComponent<Text>().enabled = false;
             物品[2].GetComponent<Text>().enabled = false;
@@ -392,7 +394,7 @@ public class Console : MonoBehaviour
             {
                 cam.position += new Vector3(18 * Time.deltaTime, 0, 0);
             }
-            if (Input.mousePosition.x <= 0)
+            if (Input.mousePosition.x <= 0 && cam.position.x >= 0)
             {
                 cam.position -= new Vector3(18 * Time.deltaTime, 0, 0);
             }
@@ -400,7 +402,7 @@ public class Console : MonoBehaviour
             {
                 cam.position += new Vector3(0, 18 * Time.deltaTime, 0);
             }
-            if (Input.mousePosition.y <= 0)
+            if (Input.mousePosition.y <= 0 && cam.position.y >= 0)
             {
                 cam.position -= new Vector3(0, 18 * Time.deltaTime, 0);
             }
@@ -603,6 +605,29 @@ public class Console : MonoBehaviour
             
         }
     }
+    void abandonItem()
+    {
+        if (chosen.Count > 0)
+        {
+            if (chosen[0].GetComponent<Hero>() != null)
+            {
+                List<GeneralItem> it = chosen[0].GetComponent<Hero>().Item;
+                for (int i = 0; i < it.Count; i++)
+                {
+                    GeneralItem des = it[i];
+                    string place = (i + 1).ToString();
+                    if (des.canAbandon && Input.GetKey("z") && Input.GetKeyDown(place))
+                    {
+                        it.Remove(des);
+                        des.owner = null;
+                        des.GetComponent<BoxCollider2D>().enabled = true;
+                        des.GetComponent<SpriteRenderer>().enabled = true;
+                        des.transform.position = chosen[0].transform.position;
+                    }
+                }
+            }
+        }
+    }
      void ExeModeAtk()
      {
          if(isModeAtk && !ishold)
@@ -620,8 +645,84 @@ public class Console : MonoBehaviour
     {
         if (Input.GetKey("r"))
             SceneManager.LoadScene(0);
-        if (Input.GetKey("q"))
+        if (Input.GetKey("x"))
             Application.Quit();
+    }
+    void showInfo()
+    {
+        bool isDisplay = false;
+        for(int i = 0; i < 技能.Count; i++)
+        {
+            Vector2 thePos = Camera.main.ScreenToWorldPoint(技能[i].transform.position);
+            if (技能[i].GetComponent<Text>().enabled && Mathf.Abs(mouse.x - thePos.x) < 0.38 && Mathf.Abs(mouse.y - thePos.y) < 0.08)
+            {
+                GeneralSkills theSkill = chosen[0].GetComponent<skilledUnits>().skill[i];
+                string theTest = theSkill.name + "\n" + theSkill.description;
+                if (i == 0)
+                {
+                    theTest += "\n" + "按[Q]使用技能";
+                }
+                else if (i == 1)
+                {
+                    theTest += "\n" + "按[W]使用技能";
+                }
+                else if (i == 2)
+                {
+                    theTest += "\n" + "按[E]使用技能";
+                }
+                else
+                {
+                    theTest += "\n" + "按[R]使用技能";
+                }
+                wordHolder.GetComponent<InputField>().placeholder.GetComponent<Text>().text = theTest;
+                isDisplay = true;
+                wordHolder.GetComponent<Image>().enabled = true;
+                wordHolder.GetComponent<InputField>().placeholder.GetComponent<Text>().enabled = true;
+            }
+        }
+        for (int i = 0; i < 物品.Count; i++)
+        {
+            Vector2 thePos = Camera.main.ScreenToWorldPoint(物品[i].transform.position);
+            if (物品[i].GetComponent<Text>().enabled && Mathf.Abs(mouse.x - thePos.x) < 0.38 && Mathf.Abs(mouse.y - thePos.y) < 0.08)
+            {
+                GeneralItem theItem = chosen[0].GetComponent<Hero>().Item[i];
+                string theTest = theItem.name + "\n" + theItem.description;
+                if (i == 0)
+                {
+                    theTest += "\n" + "按[z + 1]丢弃物品 ";
+                }
+                else if (i == 1)
+                {
+                    theTest += "\n" + "按[z + 2]丢弃物品 ";
+                }
+                else if (i == 2)
+                {
+                    theTest += "\n" + "按[z + 3]丢弃物品 ";
+                }
+                else
+                {
+                    theTest += "\n" + "按[z + 4]丢弃物品 ";
+                }
+                if (theItem.canUse)
+                    theTest += "按[Alt + " + (i + 1).ToString() + "]使用物品";
+                wordHolder.GetComponent<InputField>().placeholder.GetComponent<Text>().text = theTest;
+                isDisplay = true;
+            }
+        }
+        if (isDisplay)
+        {
+            if (!wordHolder.GetComponent<Image>().enabled)
+            {
+                wordHolder.GetComponent<Image>().enabled = true;
+                wordHolder.GetComponent<InputField>().placeholder.GetComponent<Text>().enabled = true;
+            }
+            wordHolder.transform.position = Camera.main.WorldToScreenPoint(mouse);
+        }
+        else
+        {
+            wordHolder.GetComponent<Image>().enabled = false;
+            wordHolder.GetComponent<InputField>().placeholder.GetComponent<Text>().enabled = false;
+        }
     }
 
     // Update is called once per frame
@@ -635,9 +736,10 @@ public class Console : MonoBehaviour
         ChoseIndex();
         AdjustCam();
         ModeAtk();
-        
+        abandonItem();
         Choose();
         LClick();
+        showInfo();
         /*ExeModeAtk();*/
         UIgame();
     }

@@ -7,6 +7,11 @@ public class 地斩 : GeneralSkills
     public float damage;
     public float radius;
 
+    public new void Start()
+    {
+        name = "地斩";
+        description = "对周围" + radius.ToString() +"码内敌人造成" + damage.ToString() + "点伤害";
+    }
 
 
     public override void launch()

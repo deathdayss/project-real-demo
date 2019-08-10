@@ -13,6 +13,7 @@ public class GeneralItem : MonoBehaviour
     public int num = 1;
     public bool canUse;
     public bool haveCD;
+    public bool canAbandon = true;
     public float maxCD;
     public float currentCD;
     public string place;

@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Hero : skilledUnits
 {
     public List<GeneralItem> Item = new List<GeneralItem>();
     public GeneralItem tarItem;
+    public GeneralItem abandonItem;
     public int level;
     public int exp;
     public int maxExp;
@@ -20,10 +22,24 @@ public class Hero : skilledUnits
 
     public override void RClick()
     {
+        Vector2 mousePoint = Input.mousePosition;
+        Vector2 tarPointk = Camera.main.ScreenToWorldPoint(mousePoint);
+        click = Physics2D.OverlapCircleAll(tarPointk, 0.1f);
+        /*if (isFirst && Input.GetMouseButtonDown(1) && player.isOrign && !player.ishold)
+        {
+            for(int i = 0; i < player.物品.Count; i++)
+            {
+                if (player.物品[i].GetComponent<Text>().enabled && Mathf.Abs(tarPoint.x - player.物品[i].transform.position.x) < 0.27 && Mathf.Abs(tarPoint.y - player.物品[i].transform.position.y) < 0.08)
+                {
+                    player.isOrign = false;
+                    player.isPullItem = true;
+                    player.pullItem = Item[i];
+                    break;
+                }
+            }
+        }*/
         if (Input.GetMouseButtonDown(1) && player.isOrign && !player.ishold)
         {
-            Vector2 tarPointk = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            click = Physics2D.OverlapCircleAll(tarPointk, 0.1f);
             if (click.Length == 0)
             {
                 tarPointAnime.transform.position = tarPointk;
@@ -144,6 +160,7 @@ public class Hero : skilledUnits
                     {
                         tarItem.owner = gameObject;
                         Item.Add(tarItem);
+                        tarItem = null;
                     }
                 }
                 else if (Item.Count < 5)
