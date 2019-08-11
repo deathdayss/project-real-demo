@@ -21,8 +21,13 @@ public class GeneralItem : MonoBehaviour
     public virtual void PassiveEffect()
     {
         
+    }
+
+    public virtual void abandon()
+    {
 
     }
+
     public virtual void PositiveEffect()
     {
         if (consumable)

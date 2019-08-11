@@ -2,15 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class 冲击剑 : AimSkills
+public class 全力一斩 : AimSkills
 {
 
-    public new void Start()
-    {
-        name = "冲击剑";
-        description = "冲击" + radius.ToString() + "码距离，对沿途敌人造成" + damage + "点物理伤害。消耗1个技能点。";
-    }
-
+    public GameObject enemy;
+    // Update is called once per frame
     public override void Update()
     {
         base.Update();
@@ -33,21 +29,22 @@ public class 冲击剑 : AimSkills
             if (Input.GetMouseButtonDown(0))
             {
                 tarPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                owner.GetComponent<BasicUnits>().state = indicate;
-                owner.GetComponent<BasicUnits>().setPosition = null;
-                isAiming = false;
-                player.orignalMouse.GetComponent<SpriteRenderer>().enabled = true;
-                player.targetMouse.GetComponent<SpriteRenderer>().enabled = false;
-                player.isOrign = true;
-                player.tarPoint.transform.position = tarPoint;
-                if (player.tarPoint.GetComponent<ToMoveAnime>().isPlay)
+                Collider2D[] tar = Physics2D.OverlapCircleAll(tarPoint, 0.1f);
+                if(tar.Length > 0)
                 {
-                    player.tarPoint.GetComponent<ToMoveAnime>().time = 0f;
-                    player.tarPoint.GetComponent<Animator>().Play("ToMovePoint");
-                }
-                else
-                {
-                    player.tarPoint.GetComponent<ToMoveAnime>().isPlay = true;
+                    if (tar[0].GetComponent<BasicUnits>() != null)
+                    {
+                        if (tar[0].GetComponent<BasicUnits>().team != owner.GetComponent<BasicUnits>().team)
+                        {
+                            owner.GetComponent<BasicUnits>().state = indicate;
+                            owner.GetComponent<BasicUnits>().setPosition = null;
+                            enemy = tar[0].gameObject;
+                            isAiming = false;
+                            player.orignalMouse.GetComponent<SpriteRenderer>().enabled = true;
+                            player.targetMouse.GetComponent<SpriteRenderer>().enabled = false;
+                            player.isOrign = true;
+                        }
+                    }
                 }
             }
         }

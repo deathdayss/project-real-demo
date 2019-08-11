@@ -618,6 +618,7 @@ public class Console : MonoBehaviour
                     string place = (i + 1).ToString();
                     if (des.canAbandon && Input.GetKey("z") && Input.GetKeyDown(place))
                     {
+                        des.abandon();
                         it.Remove(des);
                         des.owner = null;
                         des.GetComponent<BoxCollider2D>().enabled = true;
@@ -657,7 +658,7 @@ public class Console : MonoBehaviour
             if (技能[i].GetComponent<Text>().enabled && Mathf.Abs(mouse.x - thePos.x) < 0.38 && Mathf.Abs(mouse.y - thePos.y) < 0.08)
             {
                 GeneralSkills theSkill = chosen[0].GetComponent<skilledUnits>().skill[i];
-                string theTest = theSkill.name + "\n" + theSkill.description;
+                string theTest = theSkill.name + "（等级" + theSkill.level + "）" + "\n" + theSkill.description;
                 if (i == 0)
                 {
                     theTest += "\n" + "按[Q]使用技能";

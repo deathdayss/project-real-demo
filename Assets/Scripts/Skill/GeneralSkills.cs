@@ -11,6 +11,7 @@ public class GeneralSkills : MonoBehaviour
     public string name;
     public string description;
     public bool isLearned;
+    public int level;
     
     // Start is called before the first frame update
     public void Start()

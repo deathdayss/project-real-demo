@@ -713,6 +713,42 @@ public class BasicUnits : MonoBehaviour
                     }
                 }
             }
+            if (seenThings.Count != 0 && team == 1)
+            {
+                for (int i = 0; i < seenThings.Count; i++)
+                {
+                    Debug.Log(seenThings.Count);
+                    if (seenThings[i] == null)
+                    {
+                        seenThings.RemoveAt(i);
+                        i--;
+                    }
+                        GameObject h = seenThings[i];
+                        seenThings.RemoveAt(i);
+                        i--;
+                        bool k = false;
+                        foreach (GameObject unit in player.myUnits)
+                        {
+                            if (unit.GetComponent<BasicUnits>().seenThings.Contains(h))
+                            {
+                                k = true;
+                                break;
+                            }
+                        }
+                        if (!k)
+                        {
+                            if (h.GetComponent<BasicUnits>() != null)
+                            {
+                                h.GetComponent<SpriteRenderer>().enabled = false;
+                            }
+                            else
+                            {
+                                h.GetComponent<SpriteRenderer>().color = Color.gray;
+                            }
+                        }
+                }
+            }
+            Debug.Log(seenThings.Count);
             Destroy(gameObject);
         }
     }
@@ -1229,7 +1265,6 @@ public class BasicUnits : MonoBehaviour
     public virtual void Update()
     {
         BarChange();
-        killed();
         CheckCollision();
         SeekDirct();
         GiveAtkPoint();
@@ -1254,5 +1289,6 @@ public class BasicUnits : MonoBehaviour
             RClick();
             PresS();
         }
+        killed();
     }
 }

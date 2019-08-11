@@ -14,10 +14,13 @@ public class AimSkills : GeneralSkills
 
     public override void launch()
     {
-        isAiming = true;
-        player.orignalMouse.GetComponent<SpriteRenderer>().enabled = false;
-        player.targetMouse.GetComponent<SpriteRenderer>().enabled = true;
-        player.isOrign = false;
+        if (owner.GetComponent<Hero>().skillPoint >= 4)
+        {
+            isAiming = true;
+            player.orignalMouse.GetComponent<SpriteRenderer>().enabled = false;
+            player.targetMouse.GetComponent<SpriteRenderer>().enabled = true;
+            player.isOrign = false;
+        }
     }
 
     public override void Update()
