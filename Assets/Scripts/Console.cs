@@ -95,7 +95,7 @@ public class Console : MonoBehaviour
             {
 
                 skilledUnits it = chosen[0].GetComponent<skilledUnits>();
-                if (it.skill1.isLearned)
+                if (it.skill1 != null && it.skill1.isLearned)
                 {
                     if (it.skill1.currentCD > 0)
                     {
@@ -390,7 +390,7 @@ public class Console : MonoBehaviour
             camMove = !camMove;
         if (camMove)
         {
-            if (Input.mousePosition.x >= 1919)
+            if (Input.mousePosition.x >= 1919 && cam.position.x <= 161)
             {
                 cam.position += new Vector3(18 * Time.deltaTime, 0, 0);
             }
@@ -398,7 +398,7 @@ public class Console : MonoBehaviour
             {
                 cam.position -= new Vector3(18 * Time.deltaTime, 0, 0);
             }
-            if (Input.mousePosition.y >= 1079)
+            if (Input.mousePosition.y >= 1079 && cam.position.y <= 120)
             {
                 cam.position += new Vector3(0, 18 * Time.deltaTime, 0);
             }

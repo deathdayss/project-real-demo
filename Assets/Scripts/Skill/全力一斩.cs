@@ -4,15 +4,23 @@ using UnityEngine;
 
 public class 全力一斩 : AimSkills
 {
-
+    public new void Start()
+    {
+        name = "全力一斩";
+        description = "对目标敌人造成" + damage + "点物理伤害。消耗3个技能点。";
+    }
     public GameObject enemy;
     // Update is called once per frame
     public override void Update()
     {
         base.Update();
+        if (owner.GetComponent<BasicUnits>().state != indicate)
+        {
+            enemy = null;
+        }
         if (isAiming)
         {
-            if (owner.GetComponent<Hero>().skillPoint < 4)
+            if (owner.GetComponent<Hero>().skillPoint < 12)
             {
                 isAiming = false;
                 player.orignalMouse.GetComponent<SpriteRenderer>().enabled = true;
@@ -39,6 +47,7 @@ public class 全力一斩 : AimSkills
                             owner.GetComponent<BasicUnits>().state = indicate;
                             owner.GetComponent<BasicUnits>().setPosition = null;
                             enemy = tar[0].gameObject;
+                            enemy.GetComponent<BasicUnits>().circleAnime = true;
                             isAiming = false;
                             player.orignalMouse.GetComponent<SpriteRenderer>().enabled = true;
                             player.targetMouse.GetComponent<SpriteRenderer>().enabled = false;
@@ -50,32 +59,21 @@ public class 全力一斩 : AimSkills
         }
         if (owner.GetComponent<BasicUnits>().state == indicate)
         {
-            if (owner.GetComponent<Hero>().skillPoint < 4)
+            if (owner.GetComponent<Hero>().skillPoint < 12)
             {
                 owner.GetComponent<BasicUnits>().state = 0;
+                enemy = null;
             }
-            owner.transform.position = Vector2.MoveTowards(owner.transform.position, tarPoint, owner.GetComponent<BasicUnits>().movSpd * Time.deltaTime);
-            if (Vector2.Distance(owner.transform.position, tarPoint) <= radius)
+            owner.transform.position = Vector2.MoveTowards(owner.transform.position, enemy.transform.position, owner.GetComponent<BasicUnits>().movSpd * Time.deltaTime);
+            if (Vector2.Distance(owner.transform.position, enemy.transform.position) <= owner.GetComponent<BasicUnits>().radius + enemy.GetComponent<BasicUnits>().radius)
             {
-                owner.GetComponent<Hero>().skillPoint -= 4;
-                RaycastHit2D[] Object = Physics2D.CircleCastAll(owner.transform.position, radius2, tarPoint - (Vector2)owner.transform.position, Vector2.Distance(owner.transform.position, tarPoint));
-                foreach (RaycastHit2D unit in Object)
+                owner.GetComponent<Hero>().skillPoint -= 12;
+                enemy.GetComponent<BasicUnits>().HP -= damage - enemy.GetComponent<BasicUnits>().phDef;
+                if (enemy.GetComponent<BasicUnits>().HP <= 0)
                 {
-                    if (unit.collider.isTrigger && unit.collider.GetComponent<BasicUnits>() != null)
-                    {
-                        BasicUnits it = unit.collider.GetComponent<BasicUnits>();
-                        if (it.team != owner.GetComponent<BasicUnits>().team)
-                        {
-                            it.HP -= damage - it.phDef;
-                            if (it.HP <= 0)
-                            {
-                                it.killer = owner;
-                            }
-                        }
-                    }
+                    enemy.GetComponent<BasicUnits>().killer = owner;
                 }
                 owner.GetComponent<BasicUnits>().state = 0;
-                owner.transform.position = tarPoint;
                 currentCD = maxCD;
             }
         }

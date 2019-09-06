@@ -39,6 +39,7 @@ public class BasicUnits : MonoBehaviour
     public GameObject HpBar2;
     public GameObject tarEnemy = null;
     public GameObject killer;
+    public GameObject item;
     public float time = 0;
     public float timeHelper = 0;
     public float timeAnime = 0;
@@ -315,13 +316,16 @@ public class BasicUnits : MonoBehaviour
             {
                 foreach (Collider2D unit in round1)
                 {
-                    if (unit.isTrigger)
+                    if (unit.GetComponent<tilemap>() == null)
                     {
-                        round.Add(unit);
-                    }
-                    else if (unit.GetComponent<BasicUnits>() == null)
-                    {
-                        round.Add(unit);
+                        if (unit.isTrigger)
+                        {
+                            round.Add(unit);
+                        }
+                        else if (unit.GetComponent<BasicUnits>() == null)
+                        {
+                            round.Add(unit);
+                        }
                     }
                 }
             }
@@ -370,13 +374,16 @@ public class BasicUnits : MonoBehaviour
             {
                 foreach (Collider2D unit in round1)
                 {
-                    if (unit.isTrigger)
+                    if (unit.GetComponent<tilemap>() == null)
                     {
-                        round.Add(unit);
-                    }
-                    else if (unit.GetComponent<BasicUnits>() == null)
-                    {
-                        round.Add(unit);
+                        if (unit.isTrigger)
+                        {
+                            round.Add(unit);
+                        }
+                        else if (unit.GetComponent<BasicUnits>() == null)
+                        {
+                            round.Add(unit);
+                        }
                     }
                 }
             }
@@ -680,6 +687,10 @@ public class BasicUnits : MonoBehaviour
             {
                 player.enemyChoice = null;
             }
+            if (item != null)
+            {
+                item.transform.position = transform.position;
+            }
             player.chosen.Remove(gameObject);
             player.myUnits.Remove(gameObject);
             player.team1.Remove(gameObject);
@@ -695,13 +706,16 @@ public class BasicUnits : MonoBehaviour
                 List<Hero> trueGainer = new List<Hero>();
                 foreach (Collider2D unit in gainer)
                 {
-                    if (unit.isTrigger && unit.GetComponent<Hero>() != null)
+                    if (unit.GetComponent<tilemap>() == null)
                     {
-                        Hero it = unit.GetComponent<Hero>();
-                        if (it.team == killer.GetComponent<BasicUnits>().team)
+                        if (unit.isTrigger && unit.GetComponent<Hero>() != null)
                         {
-                            trueGainer.Add(it);
-                            num++;
+                            Hero it = unit.GetComponent<Hero>();
+                            if (it.team == killer.GetComponent<BasicUnits>().team)
+                            {
+                                trueGainer.Add(it);
+                                num++;
+                            }
                         }
                     }
                 }
@@ -717,7 +731,6 @@ public class BasicUnits : MonoBehaviour
             {
                 for (int i = 0; i < seenThings.Count; i++)
                 {
-                    Debug.Log(seenThings.Count);
                     if (seenThings[i] == null)
                     {
                         seenThings.RemoveAt(i);

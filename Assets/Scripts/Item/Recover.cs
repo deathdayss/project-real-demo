@@ -30,6 +30,15 @@ public class Recover : GeneralItem
         else if (category == 1)
         {
 
+            int tvar = Mathf.FloorToInt(var) + owner.GetComponent<Hero>().skillPoint;
+            if (tvar >= owner.GetComponent<Hero>().maxSkillPoint)
+            {
+                owner.GetComponent<Hero>().skillPoint = owner.GetComponent<Hero>().maxSkillPoint;
+            }
+            else
+            {
+                owner.GetComponent<Hero>().skillPoint = tvar;
+            }
         }
         base.PositiveEffect();
     }
