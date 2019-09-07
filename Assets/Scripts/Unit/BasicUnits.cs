@@ -40,6 +40,7 @@ public class BasicUnits : MonoBehaviour
     public GameObject tarEnemy = null;
     public GameObject killer;
     public GameObject item;
+    public BasicUnits retainIt;
     public float time = 0;
     public float timeHelper = 0;
     public float timeAnime = 0;
@@ -70,6 +71,25 @@ public class BasicUnits : MonoBehaviour
 
     public virtual void Start()
     {
+        if(retainIt != null)
+        {
+            name = retainIt.name;
+            HP = retainIt.HP;
+            maxHp = retainIt.maxHp;
+            phAtk = retainIt.phAtk;
+            mgAtk = retainIt.mgAtk;
+            phDef = retainIt.phDef;
+            mgDef = retainIt.mgDef;
+            movSpd = retainIt.movSpd;
+            atkSpd = retainIt.atkSpd;
+            atkDis = retainIt.atkDis;
+            radius = retainIt.radius;
+            Exp = retainIt.Exp;
+            arExp = retainIt.arExp;
+            sight = retainIt.sight;
+            seek = retainIt.seek;
+            atkMode = retainIt.atkMode;
+        }
         if (team != 1)
         {
             gameObject.GetComponent<SpriteRenderer>().enabled = false;

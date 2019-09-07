@@ -12,15 +12,40 @@ public class Hero : skillPointUnits
     public int level;
     public int exp;
     public int maxExp;
-    
+    public float plusHP;
+    public float plusPhAtk;
+    public float plusMgAtk;
+    public float plusPhDef;
+    public float plusMgDef;
+
+    public override void Start()
+    {
+        base.Start();
+        skill2.isLearned = false;
+        skill3.isLearned = false;
+    }
     void levelUp()
     {
         if (exp >= maxExp)
         {
             level++;
             maxExp += 10;
+            HP += plusHP;
+            maxHp += plusHP;
+            phAtk += plusPhAtk;
+            mgAtk += plusMgAtk;
+            phDef += plusPhDef;
+            mgDef += plusMgDef;
+            if(level == 2)
+            {
+                skill2.isLearned = true;
+            }
+            if(level == 5)
+            {
+                skill3.isLearned = true;
+            }
         }
-    }
+    } 
  
     
     public override void RClick()

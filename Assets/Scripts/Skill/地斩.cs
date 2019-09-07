@@ -10,7 +10,7 @@ public class 地斩 : GeneralSkills
     public new void Start()
     {
         name = "地斩";
-        description = "对周围" + radius.ToString() +"码内敌人造成" + damage.ToString() + "点物理伤害。消耗1个技能点。";
+        description = "对周围" + radius.ToString() +"码内敌人造成" + damage.ToString() + "倍物理伤害。消耗1个技能点。";
     }
 
 
@@ -29,7 +29,7 @@ public class 地斩 : GeneralSkills
                     BasicUnits it = thing.GetComponent<BasicUnits>();
                     if (it.team != 1)
                     {
-                        it.HP -= damage - it.phDef;
+                        it.HP -= damage * owner.GetComponent<BasicUnits>().phAtk - it.phDef;
                         if (it.HP <= 0)
                         {
                             it.killer = owner;

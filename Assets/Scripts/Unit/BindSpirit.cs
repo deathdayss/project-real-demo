@@ -11,20 +11,34 @@ public class BindSpirit : skillPointUnits
     public float damage;
     public GameObject bindTarget;
     public GameObject bindPic;
+    public BindSpirit retainBind;
     public Vector2 stayPoint;
+    public float timeBind;
+    public float timeBindHelper;
 
     // Start is called before the first frame update
     public override void Start()
     {
         base.Start();
         bindPic.GetComponent<SpriteRenderer>().enabled = false;
+        if(retainIt != null)
+        {
+            maxCD = retainBind.maxCD;
+            maxTime = retainBind.maxTime;
+            damage = retainBind.damage;
+        }
     }
 
     void binding()
     {
         if (bindTarget != null)
         {
-            bindTarget.GetComponent<BasicUnits>().HP -= damage * Time.deltaTime;
+            timeBind += Time.deltaTime;
+            if(timeBind - timeHelper >= 1)
+            {
+                timeHelper = timeBind;
+                bindTarget.GetComponent<BasicUnits>().HP -= damage;
+            }
             bindTarget.transform.position = stayPoint;
             if(lastTime <= 0)
             {
@@ -34,6 +48,7 @@ public class BindSpirit : skillPointUnits
         }
         else
         {
+            lastTime = 0;
             bindPic.GetComponent<SpriteRenderer>().enabled = false;
         }
     }
@@ -42,6 +57,8 @@ public class BindSpirit : skillPointUnits
     {
         if(currentCD <= 0 && skillPoint >= 4 && Vector2.Distance(transform.position, enemy.transform.position) <= 4)
         {
+            timeBind = 0;
+            timeBindHelper = 0;
             currentCD = maxCD;
             skillPoint -= 4;
             bindTarget = enemy;

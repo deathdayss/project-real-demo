@@ -8,7 +8,7 @@ public class 冲击剑 : AimSkills
     public new void Start()
     {
         name = "冲击剑";
-        description = "冲击" + radius.ToString() + "码距离，对沿途敌人造成" + damage + "点物理伤害。消耗1个技能点。";
+        description = "冲击" + radius.ToString() + "码距离，对沿途敌人造成" + damage + "倍物理伤害。消耗1个技能点。";
     }
 
     public override void Update()
@@ -69,7 +69,7 @@ public class 冲击剑 : AimSkills
                         BasicUnits it = unit.collider.GetComponent<BasicUnits>();
                         if (it.team != owner.GetComponent<BasicUnits>().team)
                         {
-                            it.HP -= damage - it.phDef;
+                            it.HP -= damage * owner.GetComponent<BasicUnits>().phAtk - it.phDef;
                             if (it.HP <= 0)
                             {
                                 it.killer = owner;
