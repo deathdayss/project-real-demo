@@ -14,6 +14,13 @@ public class skillPointUnits : skilledUnits
         {
             for (int i = 0; i < skillCircle.Count; i++)
             {
+                if(gameObject.GetComponent<SpriteRenderer>().enabled)
+                {
+                    skillCircle[i].GetComponent<SpriteRenderer>().enabled = true;
+                } else
+                {
+                    skillCircle[i].GetComponent<SpriteRenderer>().enabled = false;
+                }
                 float m = (float)skillPoint - 4 * i;
                 if (m <= 4)
                 {
