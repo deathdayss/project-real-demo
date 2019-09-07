@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 
 public class Console : MonoBehaviour
 {
@@ -743,6 +744,5 @@ public class Console : MonoBehaviour
         showInfo();
         /*ExeModeAtk();*/
         UIgame();
-        Debug.Log(myUnits.Count);
     }
 }

@@ -37,7 +37,7 @@ public class BindSpirit : skillPointUnits
             if(timeBind - timeHelper >= 1)
             {
                 timeHelper = timeBind;
-                bindTarget.GetComponent<BasicUnits>().HP -= damage;
+                bindTarget.GetComponent<BasicUnits>().HP -= damage - bindTarget.GetComponent<BasicUnits>().mgDef;
             }
             bindTarget.transform.position = stayPoint;
             if(lastTime <= 0)
