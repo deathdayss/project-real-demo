@@ -16,7 +16,7 @@ public class 地斩 : GeneralSkills
 
     public override void launch()
     {
-        if (owner.GetComponent<Hero>().skillPoint >= 4)
+        if (owner.GetComponent<Hero>().skillPoint >= 4 && isLearned)
         {
             owner.GetComponent<Hero>().skillPoint -= 4;
             owner.GetComponent<BasicUnits>().state = 0;

@@ -39,7 +39,7 @@ public class skilledUnits : BasicUnits
         if (isFirst && player.isOrign)
         {
             
-            if (skill1 != null && skill1.currentCD <= 0 &&  Input.GetKeyDown("q"))
+            if (skill1 != null && skill1.currentCD <= 0 &&  Input.GetKeyDown("q") && skill1.isLearned)
             {
                 foreach(GameObject unit in player.chosen)
                 {
@@ -50,7 +50,7 @@ public class skilledUnits : BasicUnits
                 }
                 skill1.launch();
             }
-            else if (skill2 != null && skill2.currentCD <= 0 && Input.GetKeyDown("w"))
+            else if (skill2 != null && skill2.currentCD <= 0 && Input.GetKeyDown("w") && skill2.isLearned)
             {
                 foreach (GameObject unit in player.chosen)
                 {
@@ -61,7 +61,7 @@ public class skilledUnits : BasicUnits
                 }
                 skill2.launch();
             }
-            else if (skill3 != null && skill3.currentCD <= 0 && Input.GetKeyDown("e"))
+            else if (skill3 != null && skill3.currentCD <= 0 && Input.GetKeyDown("e") && skill3.isLearned)
             {
                 foreach (GameObject unit in player.chosen)
                 {
@@ -72,7 +72,7 @@ public class skilledUnits : BasicUnits
                 }
                 skill3.launch();
             }
-            else if (skill4 != null && skill4.currentCD <= 0 && Input.GetKeyDown("r"))
+            else if (skill4 != null && skill4.currentCD <= 0 && Input.GetKeyDown("r") && skill4 .isLearned)
             {
                 foreach (GameObject unit in player.chosen)
                 {

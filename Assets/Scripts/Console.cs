@@ -743,5 +743,10 @@ public class Console : MonoBehaviour
         showInfo();
         /*ExeModeAtk();*/
         UIgame();
+        Debug.Log(myUnits.Count);
+        foreach(GameObject my in myUnits)
+        {
+            Debug.Log(my.GetComponent<BasicUnits>().name);
+        }
     }
 }

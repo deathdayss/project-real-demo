@@ -14,7 +14,7 @@ public class AimSkills : GeneralSkills
 
     public override void launch()
     {
-        if (owner.GetComponent<Hero>().skillPoint >= 4)
+        if (owner.GetComponent<Hero>().skillPoint >= 4 && isLearned)
         {
             isAiming = true;
             player.orignalMouse.GetComponent<SpriteRenderer>().enabled = false;
