@@ -12,11 +12,13 @@ public class Hero : skillPointUnits
     public int level;
     public int exp;
     public int maxExp;
+    public int addExp;
     public float plusHP;
     public float plusPhAtk;
     public float plusMgAtk;
     public float plusPhDef;
     public float plusMgDef;
+   
 
     public override void Start()
     {
@@ -28,8 +30,23 @@ public class Hero : skillPointUnits
     {
         if (exp >= maxExp)
         {
+            if(level <= 2)
+            {
+                addExp = 15;
+            } else if(level <= 4)
+            {
+                addExp = 25;
+            }
+            else if (level <= 6)
+            {
+                addExp = 35;
+            }
+            else
+            {
+                addExp = 40;
+            }
             level++;
-            maxExp += 10;
+            maxExp += addExp;
             HP += plusHP;
             maxHp += plusHP;
             phAtk += plusPhAtk;
@@ -39,8 +56,7 @@ public class Hero : skillPointUnits
             if(level == 2)
             {
                 skill2.isLearned = true;
-            }
-            if(level == 5)
+            } else if(level == 5)
             {
                 skill3.isLearned = true;
             }
