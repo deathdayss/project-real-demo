@@ -6,6 +6,7 @@ public class activeObject : MonoBehaviour
 {
     public List<GameObject> activeIt = new List<GameObject>();
     public Console player;
+    public Plot myPlot;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,7 +27,8 @@ public class activeObject : MonoBehaviour
                 {
                     target.SetActive(true);
                 }
-                Destroy(gameObject);
+                myPlot.getText();
+                Destroy(this);
             }
         }
     }
