@@ -18,7 +18,8 @@ public class Plot : MonoBehaviour
     int current = 0;
     bool isTexting = false;
     float timeKeeper = 0;
-    // Start is called before the first frame update
+
+    // Set up dialogues
     public void Start()
     {
         string[] d1 = new string[1];

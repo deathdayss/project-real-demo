@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class binding : MonoBehaviour
 {
+    public Plot myPlot;
     public List<GameObject> bindedUnits = new List<GameObject>();
     public List<GameObject> binds = new List<GameObject>();
     public List<GameObject> enemies = new List<GameObject>();
@@ -38,6 +39,7 @@ public class binding : MonoBehaviour
         }
         if(allNull)
         {
+            myPlot.getText();
             for (int i = 0; i < binds.Count; i++)
             {
                 bindedUnits[i].GetComponent<BasicUnits>().team = 1;
