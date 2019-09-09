@@ -177,7 +177,7 @@ public class BasicUnits : MonoBehaviour
     }*/
     public void BarChange()
     {
-        if (gameObject.GetComponent<SpriteRenderer>().enabled == true)
+        if (gameObject.GetComponent<SpriteRenderer>().enabled )
         {
             HpBar.GetComponent<SpriteRenderer>().enabled = true;
             HpBar1.GetComponent<SpriteRenderer>().enabled = true;
@@ -191,7 +191,7 @@ public class BasicUnits : MonoBehaviour
                 g = 2 * m;
             }
             HpBar.GetComponent<Renderer>().material.color = new Color(r, g, 0, 1);
-
+            //HpBar.transform.position = new Vector2(HpBar.transform.position.x - (1 - m) * 1.25f * barK, HpBar.transform.position.y);
             HpBar.transform.position = new Vector2(transform.position.x + barX - (1 - m) * 1.25f * barK, transform.position.y + barY);
             HpBar.transform.localScale = new Vector3(barK * m, 1f, 1f);
         }
@@ -204,7 +204,9 @@ public class BasicUnits : MonoBehaviour
     }
     public virtual Vector2 Moveing(Vector2 place)
     {
-        
+        /*Debug.Log("state is " + state);
+        Debug.Log("target is " + place);
+        Debug.Log("current is " + transform.position);*/
         return Vector2.MoveTowards(transform.position, place, movSpd * Time.deltaTime);
     }
 

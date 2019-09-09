@@ -6,7 +6,7 @@ public class LandSlip : MonoBehaviour
 {
     public Plot myPlot;
     public Console player;
-    public GameObject stones = new GameObject();
+    public GameObject stones;
 
     // Update is called once per frame
     void Update()
@@ -20,7 +20,7 @@ public class LandSlip : MonoBehaviour
                 countArmy++;
             }
         }
-        if(countArmy >= player.myUnits.Count - 2)
+        if(countArmy >= player.myUnits.Count - 1 && countArmy > 0)
         {
             myPlot.getText();
             stones.SetActive(true);

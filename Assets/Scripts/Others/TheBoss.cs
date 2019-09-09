@@ -6,7 +6,7 @@ public class TheBoss : MonoBehaviour
 {
     public Console player;
     public Plot myPlot;
-    public GameObject boss;
+    public GameObject theEnd;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,10 +25,10 @@ public class TheBoss : MonoBehaviour
                 countArmy++;
             }
         }
-        if (countArmy >= player.myUnits.Count - 2)
+        if (countArmy >= player.myUnits.Count - 1 && countArmy > 0)
         {
             myPlot.getText();
-            boss.SetActive(true);
+            theEnd.SetActive(true);
             Destroy(gameObject);
         }
     }
