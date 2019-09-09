@@ -9,12 +9,12 @@ public class Plot : MonoBehaviour
     public GameObject content;
     public List<GameObject> textAll = new List<GameObject>();
     public List<GameObject> recordAll = new List<GameObject>();
-    public float width = 507;
-    public float height = 26.2f;
-    public float widthR = 985.5f;
-    public float hightR = 43.9f;
+    float width = 653;
+    float height = 26.2f;
+    float widthR = 985.5f;
+    float hightR = 43.9f;
     List<string[]> dialogue = new List<string[]>();
-    public float eachTime = 5;
+    float eachTime = 4;
     int current = 0;
     bool isTexting = false;
     float timeKeeper = 0;
@@ -74,7 +74,7 @@ public class Plot : MonoBehaviour
                 dialogue[i][0] = it;
             }
         }
-
+        getText();
     }
 
     // Add text to screen and record 
@@ -97,9 +97,9 @@ public class Plot : MonoBehaviour
             rText.text = dialogue[current][i];
             rText.fontSize = 35;
             rText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
-            content.GetComponent<RectTransform>().sizeDelta = new Vector3(0, 0, (1.5f * recordAll.Count - 0.5f) * hightR);
-            record.transform.parent = content.transform;
-            record.transform.position = new Vector2(canvas.transform.position.x, canvas.transform.position.y);
+            //content.GetComponent<RectTransform>().sizeDelta = new Vector2(0, (1.5f * recordAll.Count - 0.5f) * hightR);
+            //record.transform.parent = content.transform;
+            //record.transform.position = new Vector2(content.transform.position.x, content.transform.position.y - 0.5f * hightR);
             record.GetComponent<RectTransform>().sizeDelta = new Vector2(widthR, hightR);
         }
 
@@ -129,20 +129,12 @@ public class Plot : MonoBehaviour
         {
             if(timeKeeper >= textAll.Count * eachTime)
             {
-                /*for (int i = 0; i < dialogue[current].Length; i++)
+                content.GetComponent<RectTransform>().sizeDelta = new Vector2(0, (1.5f * recordAll.Count - 0.5f) * hightR + 20);
+                for (int i = 0; i < recordAll.Count; i++)
                 {
-                    GameObject record = new GameObject();
-                    recordAll.Add(record);
-                    record.AddComponent<Text>();
-                    Text rText = record.GetComponent<Text>();
-                    rText.text = dialogue[current][i];
-                    rText.fontSize = 35;
-                    rText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
-                    content.GetComponent<RectTransform>().sizeDelta = new Vector3(0, 0, (1.5f * recordAll.Count - 0.5f) * hightR);
-                    record.transform.parent = content.transform;
-                    record.transform.position = new Vector2(canvas.transform.position.x, canvas.transform.position.y);
-                    record.GetComponent<RectTransform>().sizeDelta = new Vector2(widthR, hightR);
-                }*/
+                    recordAll[i].transform.parent = content.transform;
+                    recordAll[i].transform.position = new Vector2(content.transform.position.x + 0.5f * widthR + 40, content.transform.position.y - (0.5f + 1.5f * i) * hightR - 10);
+                }
                 foreach (GameObject text in textAll)
                 {
                     Destroy(text);
