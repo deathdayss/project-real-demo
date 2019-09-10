@@ -790,6 +790,7 @@ public class BasicUnits : MonoBehaviour
     public virtual void AddTar(GameObject tar) // tool method
     {
         tarEnemy = tar;
+        Debug.Log(tar.GetComponent<BasicUnits>().name);
         tarEnemy.GetComponent<BasicUnits>().attacker.Add(gameObject);
         state = 2; // attack tarEnemy
         CancelArea();
@@ -870,10 +871,13 @@ public class BasicUnits : MonoBehaviour
             }
             else if (tarEnemy.GetComponent<SpriteRenderer>().enabled)
             {
-                if ((Vector2)transform.position == atkPoint)
+                //Debug.Log("arrive here");
+                //if ((Vector2)transform.position == atkPoint)
+                /*if ((Vector2)transform.position == atkPoint)
                 {
                     atkPoint = tarEnemy.transform.position;
-                }
+                }*/
+                atkPoint = tarEnemy.transform.position;
                 transform.position = Moveing(atkPoint);
             }
             else
@@ -896,10 +900,11 @@ public class BasicUnits : MonoBehaviour
         
         if (isSeeking && !isClosed && temCollision == null) // seek to the areaEnemy
         {
-            if ((Vector2)transform.position == atkPoint)
+            /*if ((Vector2)transform.position == atkPoint)
             {
                 atkPoint = areaEnemy.transform.position;
-            }
+            }*/
+            atkPoint = areaEnemy.transform.position;
             /*transform.position = Moveing(areaEnemy.transform.position);*/ // Epic Trouble. Must be understood and solved
             transform.position = Moveing(atkPoint);
         }
