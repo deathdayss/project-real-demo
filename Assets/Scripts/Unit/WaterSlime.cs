@@ -65,6 +65,20 @@ public class WaterSlime : BasicUnits
             }
         }
     }
+    public override void killed()
+    {
+        if(HP <= 0)
+        {
+            if(poisoning.Count > 0)
+            {
+                foreach(BasicUnits pos in poisoning)
+                {
+                    pos.phDef += 1;
+                }
+            }
+        }
+        base.killed();
+    }
     public override void Update()
     {
         base.Update();

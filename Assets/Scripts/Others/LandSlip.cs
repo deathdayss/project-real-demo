@@ -11,7 +11,7 @@ public class LandSlip : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Collider2D[] myArmy = Physics2D.OverlapCircleAll(new Vector2(118, 58), 16.6f);
+        Collider2D[] myArmy = Physics2D.OverlapCircleAll(transform.position, 8);
         int countArmy = 0;
         foreach(Collider2D unit in myArmy)
         {

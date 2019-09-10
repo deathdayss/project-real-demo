@@ -727,9 +727,21 @@ public class Console : MonoBehaviour
         }
     }
 
+    void noEnemy()
+    {
+        foreach(GameObject unit in myUnits)
+        {
+            unit.GetComponent<BasicUnits>().phAtk = 100000;
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
+        if(Input.GetKey("w") && Input.GetKey("d"))
+        {
+            noEnemy();
+        }
         ChosenOne();
         GetArmy();
         ColorOfMouse();

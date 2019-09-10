@@ -783,7 +783,6 @@ public class BasicUnits : MonoBehaviour
                         }
                 }
             }
-            Debug.Log(seenThings.Count);
             Destroy(gameObject);
         }
     }

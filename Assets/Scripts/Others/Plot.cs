@@ -14,7 +14,7 @@ public class Plot : MonoBehaviour
     float widthR = 985.5f;
     float hightR = 43.9f;
     List<string[]> dialogue = new List<string[]>();
-    float eachTime = 4;
+    float eachTime = 3.5f;
     int current = 0;
     bool isTexting = false;
     float timeKeeper = 0;
@@ -87,7 +87,8 @@ public class Plot : MonoBehaviour
         {
             m = 0;
         }
-        
+        Debug.Log("current is " + current);
+        Debug.Log("lines are " + dialogue[current].Length);
         for(int i = 0; i < dialogue[current].Length; i++)
         {
             GameObject record = new GameObject();
