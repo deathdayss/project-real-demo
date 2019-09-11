@@ -22,6 +22,7 @@ public class PlotTrigger : MonoBehaviour
             {
                 myPlot.getText();
                 Destroy(gameObject);
+                break;
             }
         }
     }

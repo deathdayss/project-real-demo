@@ -49,7 +49,7 @@ public class Console : MonoBehaviour
     public GameObject enemyChoice;
     Vector2 box1;
     Vector2 box1S;
-    bool camMove = false;
+    bool camMove = true;
     
     
 
@@ -369,10 +369,10 @@ public class Console : MonoBehaviour
         Vector2 place1 = new Vector2(mouse.x + 0.07f, mouse.y - 0.1f);
         orignalMouse.transform.position = place1;
         targetMouse.transform.position = mouse;
-        if (Input.GetKeyDown("m"))
+        /*if (Input.GetKeyDown("m"))
         {
             Cursor.visible = !Cursor.visible;
-        }
+        }*/
     }
     void ChoseIndex()
     {
@@ -387,8 +387,8 @@ public class Console : MonoBehaviour
     }
     void AdjustCam()
     {
-        if (Input.GetKeyDown("c"))
-            camMove = !camMove;
+        /*if (Input.GetKeyDown("c"))
+            camMove = !camMove;*/
         if (camMove)
         {
             if (Input.mousePosition.x >= 1919 && cam.position.x <= 161)
