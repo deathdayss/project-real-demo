@@ -29,6 +29,7 @@ public class activeObject : MonoBehaviour
                 }
                 myPlot.getText();
                 Destroy(this);
+                break;
             }
         }
     }

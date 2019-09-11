@@ -6,17 +6,13 @@ using UnityEngine.UI;
 public class ShowInstruction : MonoBehaviour
 {
     public GameObject instruction;
-    bool isDisplay = false;
+    public GameObject others;
     public void tryIt()
     {
-        if(!isDisplay)
+        instruction.SetActive(!instruction.activeSelf);
+        if(instruction.activeSelf)
         {
-            isDisplay = true;
-            instruction.SetActive(true);
-        } else
-        {
-            instruction.SetActive(false);
-            isDisplay = false;
+            others.SetActive(false);
         }
     }
 }

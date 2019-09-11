@@ -21,6 +21,7 @@ public class BossGreen : skillPointUnits
     public List<GameObject> roundClose = new List<GameObject>();
     public List<GameObject> roundFar= new List<GameObject>();
     public GameObject lastThings;
+    public GameObject bindingObstruction;
     public int bindingF = 5;
     int punchNum = 3;
     int pro = 2;
@@ -88,8 +89,8 @@ public class BossGreen : skillPointUnits
         t2.transform.position = trees[2 * summonTime + 1].transform.position;
         t1.transform.parent = gameObject.transform;
         t2.transform.parent = gameObject.transform;
-        Destroy(trees[2 * summonTime]);
-        Destroy(trees[2 * summonTime + 1]);
+        trees[2 * summonTime].SetActive(false);
+        trees[2 * summonTime + 1].SetActive(false);
         summonTime++;
     }
 
@@ -146,7 +147,8 @@ public class BossGreen : skillPointUnits
         }
         if(HP <= 0)
         {
-            Destroy(lastThings);
+            lastThings.SetActive(false);
+            bindingObstruction.SetActive(false);
         }
         Circle();
         CircleAnime();

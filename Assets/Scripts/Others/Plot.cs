@@ -14,7 +14,7 @@ public class Plot : MonoBehaviour
     float widthR = 985.5f;
     float hightR = 43.9f;
     List<string[]> dialogue = new List<string[]>();
-    float eachTime = 3.5f;
+    float eachTime = 3;
     int current = 0;
     bool isTexting = false;
     float timeKeeper = 0;
@@ -49,7 +49,7 @@ public class Plot : MonoBehaviour
         d6[7] = "这个藤蔓应该就会枯萎。";
         d6[8] = "亚提斯：你任务都布置的这么明确了，那就干咯。";
         string[] d7 = new string[2];
-        d7[1] = "维京战士B：点火。";
+        d7[1] = "维京战士B：点火。引爆！";
         string[] d8 = new string[2];
         d8[1] = "维京战士B：啊，树变妖怪了！";
         string[] d9 = new string[2];
@@ -88,6 +88,7 @@ public class Plot : MonoBehaviour
             m = 0;
         }
         Debug.Log("current is " + current);
+        Debug.Log(dialogue.Count);
         Debug.Log("lines are " + dialogue[current].Length);
         for(int i = 0; i < dialogue[current].Length; i++)
         {

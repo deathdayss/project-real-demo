@@ -22,12 +22,13 @@ public class TreeToMonster : MonoBehaviour
         {
             foreach (GameObject unit in player.myUnits)
             {
-                if (Vector2.Distance(gameObject.transform.position, unit.transform.position) <= 8)
+                if (Vector2.Distance(transform.position, unit.transform.position) <= 8)
                 {
                     myPlot.getText();
                     monsters.SetActive(true);
-                    Destroy(trees);
+                    trees.SetActive(false);
                     Destroy(gameObject);
+                    break;
                 }
             }
         }

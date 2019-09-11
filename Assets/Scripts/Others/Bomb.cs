@@ -23,8 +23,9 @@ public class Bomb : MonoBehaviour
             {
                 trigger.canTrigger = true;
                 myPlot.getText();
-                Destroy(stones);
+                stones.SetActive(false);
                 Destroy(gameObject);
+                break;
             }
         }
     }

@@ -43,7 +43,7 @@ public class skilledUnits : BasicUnits
             {
                 foreach(GameObject unit in player.chosen)
                 {
-                    if (unit.GetComponent<skilledUnits>().name == name && unit != gameObject)
+                    if (unit.GetComponent<skilledUnits>() != null && unit.GetComponent<skilledUnits>().name == name && unit != gameObject)
                     {
                         unit.GetComponent<skilledUnits>().skill1.launch();
                     }
@@ -54,7 +54,7 @@ public class skilledUnits : BasicUnits
             {
                 foreach (GameObject unit in player.chosen)
                 {
-                    if (unit.GetComponent<skilledUnits>().name == name && unit != gameObject)
+                    if (unit.GetComponent<skilledUnits>() != null && unit.GetComponent<skilledUnits>().name == name && unit != gameObject)
                     {
                         unit.GetComponent<skilledUnits>().skill2.launch();
                     }
@@ -65,7 +65,7 @@ public class skilledUnits : BasicUnits
             {
                 foreach (GameObject unit in player.chosen)
                 {
-                    if (unit.GetComponent<skilledUnits>().name == name && unit != gameObject)
+                    if (unit.GetComponent<skilledUnits>() != null && unit.GetComponent<skilledUnits>().name == name && unit != gameObject)
                     {
                         unit.GetComponent<skilledUnits>().skill3.launch();
                     }
@@ -76,7 +76,7 @@ public class skilledUnits : BasicUnits
             {
                 foreach (GameObject unit in player.chosen)
                 {
-                    if (unit.GetComponent<skilledUnits>().name == name && unit != gameObject)
+                    if (unit.GetComponent<skilledUnits>() != null && unit.GetComponent<skilledUnits>().name == name && unit != gameObject)
                     {
                         unit.GetComponent<skilledUnits>().skill4.launch();
                     }

@@ -45,7 +45,7 @@ public class binding : MonoBehaviour
         if(allNull)
         {
             myPlot.getText();
-            Destroy(fakes);
+            fakes.SetActive(false);
             for (int i = 0; i < binds.Count; i++)
             {
                 //bindedUnits[i].GetComponent<BasicUnits>().team = 1;
@@ -54,7 +54,7 @@ public class binding : MonoBehaviour
                 /*SpriteRenderer[] ms = bindedUnits[i].GetComponentsInChildren<SpriteRenderer>();
                 Destroy(bindedUnits[i].GetComponent<Obstraction>());*/
                 bindedUnits[i].SetActive(true);
-                Destroy(binds[i]);
+                binds[i].SetActive(false);
             }
             Destroy(gameObject);
         }   
