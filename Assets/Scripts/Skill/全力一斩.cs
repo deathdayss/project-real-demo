@@ -7,7 +7,7 @@ public class 全力一斩 : AimSkills
     public new void Start()
     {
         name = "全力一斩";
-        description = "对目标敌人造成" + damage + "倍物理伤害。消耗3个技能点。";
+        description = "对目标敌人造成" + damage + "倍物理伤害。消耗2个技能点。";
     }
     public GameObject enemy;
     // Update is called once per frame
@@ -20,7 +20,7 @@ public class 全力一斩 : AimSkills
         }
         if (isAiming)
         {
-            if (owner.GetComponent<Hero>().skillPoint < 12)
+            if (owner.GetComponent<Hero>().skillPoint < 6)
             {
                 isAiming = false;
                 player.orignalMouse.GetComponent<SpriteRenderer>().enabled = true;
@@ -59,7 +59,7 @@ public class 全力一斩 : AimSkills
         }
         if (owner.GetComponent<BasicUnits>().state == indicate)
         {
-            if (owner.GetComponent<Hero>().skillPoint < 12)
+            if (owner.GetComponent<Hero>().skillPoint < 6)
             {
                 owner.GetComponent<BasicUnits>().state = 0;
                 enemy = null;
@@ -67,7 +67,7 @@ public class 全力一斩 : AimSkills
             owner.transform.position = Vector2.MoveTowards(owner.transform.position, enemy.transform.position, owner.GetComponent<BasicUnits>().movSpd * Time.deltaTime);
             if (Vector2.Distance(owner.transform.position, enemy.transform.position) <= owner.GetComponent<BasicUnits>().radius + enemy.GetComponent<BasicUnits>().radius)
             {
-                owner.GetComponent<Hero>().skillPoint -= 12;
+                owner.GetComponent<Hero>().skillPoint -= 6;
                 enemy.GetComponent<BasicUnits>().HP -= damage * owner.GetComponent<BasicUnits>().phAtk - enemy.GetComponent<BasicUnits>().phDef;
                 if (enemy.GetComponent<BasicUnits>().HP <= 0)
                 {

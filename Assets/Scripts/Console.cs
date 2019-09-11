@@ -55,12 +55,11 @@ public class Console : MonoBehaviour
 
     private void Start()
     {
-        Cursor.visible = false;
         lineLeft.GetComponent<SpriteRenderer>().enabled = false;
         lineRight.GetComponent<SpriteRenderer>().enabled = false;
         lineDown.GetComponent<SpriteRenderer>().enabled = false;
         lineUp.GetComponent<SpriteRenderer>().enabled = false;
-        Cursor.visible = true;
+        Cursor.visible = false;
         orignalMouse.GetComponent<SpriteRenderer>().enabled = true;
         targetMouse.GetComponent<SpriteRenderer>().enabled = false;
         wordHolder.GetComponent<Image>().enabled = false;
