@@ -55,6 +55,7 @@ public class Console : MonoBehaviour
 
     private void Start()
     {
+        Cursor.visible = false;
         lineLeft.GetComponent<SpriteRenderer>().enabled = false;
         lineRight.GetComponent<SpriteRenderer>().enabled = false;
         lineDown.GetComponent<SpriteRenderer>().enabled = false;
