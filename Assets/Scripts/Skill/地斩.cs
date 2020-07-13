@@ -9,8 +9,11 @@ public class 地斩 : GeneralSkills
 
     public new void Start()
     {
-        name = "地斩";
-        description = "对周围" + radius.ToString() +"码内敌人造成" + damage.ToString() + "倍物理伤害。消耗1个技能点。";
+        //name = "地斩";
+        name = "Attack the Ground";
+        //description = "对周围" + radius.ToString() +"码内敌人造成" + damage.ToString() + "倍物理伤害。消耗1个技能点。";
+        description = "对周围" + radius.ToString() + "码内敌人造成" + damage.ToString() + "倍物理伤害。消耗1个技能点。";
+        description = "Deal " + damage.ToString() + " damage to enemies within " + radius.ToString() + " range. Consume 1 skill point.";
     }
 
 

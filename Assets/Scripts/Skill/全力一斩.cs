@@ -6,8 +6,10 @@ public class 全力一斩 : AimSkills
 {
     public new void Start()
     {
-        name = "全力一斩";
-        description = "对目标敌人造成" + damage + "倍物理伤害。消耗2个技能点。";
+        //name = "全力一斩";
+        name = "Heavy Attack";
+        //description = "对目标敌人造成" + damage + "倍物理伤害。消耗2个技能点。";
+        description = "Deal " + damage + " times Melee ATK damage to the target enemy.";
     }
     public GameObject enemy;
     // Update is called once per frame

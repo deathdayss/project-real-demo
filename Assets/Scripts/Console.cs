@@ -79,17 +79,24 @@ public class Console : MonoBehaviour
             名字.GetComponent<Text>().enabled = true;
             ico.GetComponent<Image>().sprite = chosen[0].GetComponent<SpriteRenderer>().sprite;
             HPtext.GetComponent<Text>().text = chosen[0].GetComponent<BasicUnits>().HP.ToString("0") + "/" + chosen[0].GetComponent<BasicUnits>().maxHp.ToString("0");
-            物攻.GetComponent<Text>().text = "物攻：" + chosen[0].GetComponent<BasicUnits>().phAtk.ToString("0");
-            魔攻.GetComponent<Text>().text = "魔攻：" + chosen[0].GetComponent<BasicUnits>().mgAtk.ToString("0");
-            物防.GetComponent<Text>().text = "物防：" + chosen[0].GetComponent<BasicUnits>().phDef.ToString("0");
-            魔防.GetComponent<Text>().text = "魔防：" + chosen[0].GetComponent<BasicUnits>().mgDef.ToString("0");
+            //物攻.GetComponent<Text>().text = "物攻：" + chosen[0].GetComponent<BasicUnits>().phAtk.ToString("0");
+            //魔攻.GetComponent<Text>().text = "魔攻：" + chosen[0].GetComponent<BasicUnits>().mgAtk.ToString("0");
+            //物防.GetComponent<Text>().text = "物防：" + chosen[0].GetComponent<BasicUnits>().phDef.ToString("0");
+            //魔防.GetComponent<Text>().text = "魔防：" + chosen[0].GetComponent<BasicUnits>().mgDef.ToString("0");
+
+            物攻.GetComponent<Text>().text = "Melee ATK：" + chosen[0].GetComponent<BasicUnits>().phAtk.ToString("0");
+            魔攻.GetComponent<Text>().text = "Magic ATK：" + chosen[0].GetComponent<BasicUnits>().mgAtk.ToString("0");
+            物防.GetComponent<Text>().text = "Melee DEF：" + chosen[0].GetComponent<BasicUnits>().phDef.ToString("0");
+            魔防.GetComponent<Text>().text = "Magic DEF：" + chosen[0].GetComponent<BasicUnits>().mgDef.ToString("0");
             if (chosen[0].GetComponent<BasicUnits>().atkMode)
             {
-                物攻.GetComponent<Text>().text = "主物攻：" + chosen[0].GetComponent<BasicUnits>().phAtk.ToString("0");
+                //物攻.GetComponent<Text>().text = "主物攻：" + chosen[0].GetComponent<BasicUnits>().phAtk.ToString("0");
+                物攻.GetComponent<Text>().text = "Main Melee ATK：" + chosen[0].GetComponent<BasicUnits>().phAtk.ToString("0");
             }
             else
             {
-                魔攻.GetComponent<Text>().text = "主魔攻：" + chosen[0].GetComponent<BasicUnits>().mgAtk.ToString("0");
+                //魔攻.GetComponent<Text>().text = "主魔攻：" + chosen[0].GetComponent<BasicUnits>().mgAtk.ToString("0");
+                魔攻.GetComponent<Text>().text = "Main Magic ATK：" + chosen[0].GetComponent<BasicUnits>().mgAtk.ToString("0");
             }
             名字.GetComponent<Text>().text = chosen[0].GetComponent<BasicUnits>().name;
             if (chosen[0].GetComponent<skilledUnits>() != null)
@@ -160,9 +167,11 @@ public class Console : MonoBehaviour
             if (chosen[0].GetComponent<Hero>() != null)
             {
                 Hero it = chosen[0].GetComponent<Hero>();
-                等级.GetComponent<Text>().text = "等级：" + it.level.ToString();
+                //等级.GetComponent<Text>().text = "等级：" + it.level.ToString();
+                等级.GetComponent<Text>().text = "Level：" + it.level.ToString();
                 等级.GetComponent<Text>().enabled = true;
-                经验.GetComponent<Text>().text = "经验：" + it.exp.ToString() + "/" + it.maxExp.ToString();
+                //经验.GetComponent<Text>().text = "经验：" + it.exp.ToString() + "/" + it.maxExp.ToString();
+                经验.GetComponent<Text>().text = "EXP：" + it.exp.ToString() + "/" + it.maxExp.ToString();
                 经验.GetComponent<Text>().enabled = true;
                 int all = it.Item.Count;
                 if (all != 0)
@@ -218,23 +227,30 @@ public class Console : MonoBehaviour
             名字.GetComponent<Text>().enabled = true;
             ico.GetComponent<Image>().sprite = enemyChoice.GetComponent<SpriteRenderer>().sprite;
             HPtext.GetComponent<Text>().text = enemyChoice.GetComponent<BasicUnits>().HP.ToString() + "/" + enemyChoice.GetComponent<BasicUnits>().maxHp.ToString("0");
-            物攻.GetComponent<Text>().text = "物攻：" + enemyChoice.GetComponent<BasicUnits>().phAtk.ToString("0");
-            魔攻.GetComponent<Text>().text = "魔攻：" + enemyChoice.GetComponent<BasicUnits>().mgAtk.ToString("0");
+            //物攻.GetComponent<Text>().text = "物攻：" + enemyChoice.GetComponent<BasicUnits>().phAtk.ToString("0");
+            //魔攻.GetComponent<Text>().text = "魔攻：" + enemyChoice.GetComponent<BasicUnits>().mgAtk.ToString("0");
+            物攻.GetComponent<Text>().text = "Melee ATK：" + enemyChoice.GetComponent<BasicUnits>().phAtk.ToString("0");
+            魔攻.GetComponent<Text>().text = "Magic ATK：" + enemyChoice.GetComponent<BasicUnits>().mgAtk.ToString("0");
             if (enemyChoice.GetComponent<BasicUnits>().atkMode)
             {
-                物攻.GetComponent<Text>().text = "主物攻：" + enemyChoice.GetComponent<BasicUnits>().phAtk.ToString("0");
+                //物攻.GetComponent<Text>().text = "主物攻：" + enemyChoice.GetComponent<BasicUnits>().phAtk.ToString("0");
+                物攻.GetComponent<Text>().text = "Main Melee ATK：" + enemyChoice.GetComponent<BasicUnits>().phAtk.ToString("0");
             }
             else
             {
-                魔攻.GetComponent<Text>().text = "主魔攻：" + enemyChoice.GetComponent<BasicUnits>().mgAtk.ToString("0");
+                //魔攻.GetComponent<Text>().text = "主魔攻：" + enemyChoice.GetComponent<BasicUnits>().mgAtk.ToString("0");
+                魔攻.GetComponent<Text>().text = "Main Magic ATK：" + enemyChoice.GetComponent<BasicUnits>().mgAtk.ToString("0");
             }
-            物防.GetComponent<Text>().text = "物防：" + enemyChoice.GetComponent<BasicUnits>().phDef.ToString("0");
-            魔防.GetComponent<Text>().text = "魔防：" + enemyChoice.GetComponent<BasicUnits>().mgDef.ToString("0");
+            //物防.GetComponent<Text>().text = "物防：" + enemyChoice.GetComponent<BasicUnits>().phDef.ToString("0");
+            //魔防.GetComponent<Text>().text = "魔防：" + enemyChoice.GetComponent<BasicUnits>().mgDef.ToString("0");
+            物防.GetComponent<Text>().text = "Melee DEF：" + enemyChoice.GetComponent<BasicUnits>().phDef.ToString("0");
+            魔防.GetComponent<Text>().text = "Magic DEF：" + enemyChoice.GetComponent<BasicUnits>().mgDef.ToString("0");
             名字.GetComponent<Text>().text = enemyChoice.GetComponent<BasicUnits>().name;
             if (enemyChoice.GetComponent<Hero>() != null)
             {
                 Hero it = enemyChoice.GetComponent<Hero>();
-                等级.GetComponent<Text>().text = "等级：" + it.level.ToString();
+                //等级.GetComponent<Text>().text = "等级：" + it.level.ToString();
+                等级.GetComponent<Text>().text = "Level：" + it.level.ToString();
                 等级.GetComponent<Text>().enabled = true;
             }
             技能[0].GetComponent<Text>().enabled = false;
@@ -659,22 +675,27 @@ public class Console : MonoBehaviour
             if (技能[i].GetComponent<Text>().enabled && Mathf.Abs(mouse.x - thePos.x) < 0.38 && Mathf.Abs(mouse.y - thePos.y) < 0.08)
             {
                 GeneralSkills theSkill = chosen[0].GetComponent<skilledUnits>().skill[i];
-                string theTest = theSkill.name + "（等级" + theSkill.level + "）" + "\n" + theSkill.description;
+                //string theTest = theSkill.name + "（等级" + theSkill.level + "）" + "\n" + theSkill.description;
+                string theTest = theSkill.name + "（Level" + theSkill.level + "）" + "\n" + theSkill.description;
                 if (i == 0)
                 {
-                    theTest += "\n" + "按[Q]使用技能";
+                    //theTest += "\n" + "按[Q]使用技能";
+                    theTest += "\n" + "Press [Q] to use the skill";
                 }
                 else if (i == 1)
                 {
-                    theTest += "\n" + "按[W]使用技能";
+                    //theTest += "\n" + "按[W]使用技能";
+                    theTest += "\n" + "Press [W] to use the skill";
                 }
                 else if (i == 2)
                 {
-                    theTest += "\n" + "按[E]使用技能";
+                    //theTest += "\n" + "按[E]使用技能";
+                    theTest += "\n" + "Press [E] to use the skill";
                 }
                 else
                 {
-                    theTest += "\n" + "按[R]使用技能";
+                    //theTest += "\n" + "按[R]使用技能";
+                    theTest += "\n" + "Press [R] to use the skill";
                 }
                 wordHolder.GetComponent<InputField>().placeholder.GetComponent<Text>().text = theTest;
                 isDisplay = true;
@@ -691,22 +712,27 @@ public class Console : MonoBehaviour
                 string theTest = theItem.name + "\n" + theItem.description;
                 if (i == 0)
                 {
-                    theTest += "\n" + "按[z + 1]丢弃物品 ";
+                    //theTest += "\n" + "按[z + 1]丢弃物品 ";
+                    theTest += "\n" + "Press [z + 1] to discard the item";
                 }
                 else if (i == 1)
                 {
-                    theTest += "\n" + "按[z + 2]丢弃物品 ";
+                    //theTest += "\n" + "按[z + 2]丢弃物品 ";
+                    theTest += "\n" + "Press [z + 2] to discard the item";
                 }
                 else if (i == 2)
                 {
-                    theTest += "\n" + "按[z + 3]丢弃物品 ";
+                    //theTest += "\n" + "按[z + 3]丢弃物品 ";
+                    theTest += "\n" + "Press [z + 3] to discard the item";
                 }
                 else
                 {
-                    theTest += "\n" + "按[z + 4]丢弃物品 ";
+                    //theTest += "\n" + "按[z + 4]丢弃物品 ";
+                    theTest += "\n" + "Press [z + 4] to discard the item";
                 }
                 if (theItem.canUse)
-                    theTest += "按[Alt + " + (i + 1).ToString() + "]使用物品";
+                    //theTest += "按[Alt + " + (i + 1).ToString() + "]使用物品";
+                    theTest += "Press [Alt + " + (i + 1).ToString() + "] to use the item";
                 wordHolder.GetComponent<InputField>().placeholder.GetComponent<Text>().text = theTest;
                 isDisplay = true;
             }

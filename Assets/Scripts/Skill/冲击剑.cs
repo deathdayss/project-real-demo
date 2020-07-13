@@ -7,8 +7,10 @@ public class 冲击剑 : AimSkills
 
     public new void Start()
     {
-        name = "冲击剑";
-        description = "冲击" + radius.ToString() + "码距离，对沿途敌人造成" + damage + "倍物理伤害。消耗1个技能点。";
+        //name = "冲击剑";
+        name = "Dash Attack";
+        //description = "冲击" + radius.ToString() + "码距离，对沿途敌人造成" + damage + "倍物理伤害。消耗1个技能点。";
+        description = "Move " + radius.ToString() + " and deal " + damage + " times Melee ATK damage to enemies on the way. Consume 1 skill point.";
     }
 
     public override void Update()
